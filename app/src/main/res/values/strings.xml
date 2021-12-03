@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ChatApp</string>
+    <string name="welcome_to_chat_app">Welcome to Chat App</string>
+    <string name="policy"><![CDATA[Read our Privacy Policy. Tap “Agree & Continue” to accept the Terms of Service.]]></string>
+    <string name="enter_code">Enter SMS Code</string>
+    <string name="request_otp">Request OTP</string>
+    <string name="from_jayesh_kumar">From\nJayesh Kumar</string>
+</resources>
