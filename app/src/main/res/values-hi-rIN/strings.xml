@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="app_name">चैट ऐप</string>
+    <string name="welcome_to_chat_app">चैट ऐप में आपका स्वागत है</string>
+    <string name="enter_code">एसएमएस कोड दर्ज करें</string>
+    <string name="policy"><![CDATA[हमारी गोपनीयता नीति पढ़ें। सेवा की शर्तें स्वीकार करने के लिए "सहमत और जारी रखें" पर टैप करें]]></string>
+    <string name="request_otp">अनुरोध ओटीपी</string>
+    <string name="from_jayesh_kumar">From\nJayesh Kumar</string>
+</resources>
