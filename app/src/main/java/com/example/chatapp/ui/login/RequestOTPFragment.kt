@@ -1,42 +1,57 @@
 package com.example.chatapp.ui.login
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import com.example.chatapp.R
 import com.example.chatapp.util.Constants
+import com.example.chatapp.util.SharedPref
+import com.example.chatapp.viewmodels.SharedViewModel
+import com.example.chatapp.viewmodels.SharedViewModelFactory
 import com.google.firebase.FirebaseException
-import com.google.firebase.FirebaseTooManyRequestsException
-import com.google.firebase.auth.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider
 import java.util.concurrent.TimeUnit
 
-class RequestOTPActivity : AppCompatActivity() {
+class RequestOTPFragment : Fragment() {
     lateinit var requestOtp: Button
     lateinit var phoneNumber: EditText
     lateinit var progressBar: ProgressBar
     lateinit var mAuth: FirebaseAuth
-    lateinit var mCallback:PhoneAuthProvider.OnVerificationStateChangedCallbacks
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_request_otpactivity)
+    lateinit var mCallback: PhoneAuthProvider.OnVerificationStateChangedCallbacks
+    lateinit var sharedViewModel: SharedViewModel
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_request_otpfragment, container, false)
+        sharedViewModel = ViewModelProvider(
+            requireActivity(),
+            SharedViewModelFactory()
+        )[SharedViewModel::class.java]
         mAuth = FirebaseAuth.getInstance()
-        requestOtp = findViewById(R.id.requestOtpbtn)
-        phoneNumber = findViewById(R.id.phoneNumber)
-        progressBar = findViewById(R.id.progressBar)
+        requestOtp = view.findViewById(R.id.requestOtpbtn)
+        phoneNumber = view.findViewById(R.id.phoneNumber)
+        progressBar = view.findViewById(R.id.progressBar)
         requestOtp.setOnClickListener{
             if(phoneNumber.text.toString().trim().isEmpty() ||
                 phoneNumber.text.toString().trim().length != 10 ){
-                Toast.makeText(this,"Check number",Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),"Check number", Toast.LENGTH_SHORT).show()
             }else{
                 sendOTP()
             }
         }
+        return view
     }
 
     private fun sendOTP() {
@@ -45,13 +60,13 @@ class RequestOTPActivity : AppCompatActivity() {
         mCallback = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-            //TODO
+                //TODO
             }
 
             override fun onVerificationFailed(e: FirebaseException) {
                 progressBar.isVisible = false
                 requestOtp.isVisible = true
-                Toast.makeText(this@RequestOTPActivity,"OOps",Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),"OOps",Toast.LENGTH_SHORT).show()
             }
 
             override fun onCodeSent(
@@ -60,17 +75,17 @@ class RequestOTPActivity : AppCompatActivity() {
             ) {
                 progressBar.isVisible = false
                 requestOtp.isVisible = true
-                val intent = Intent(this@RequestOTPActivity,VerifyOTPActivity::class.java)
-                intent.putExtra(Constants.VERIFICATION,verificationId)
-                startActivity(intent)
+                sharedViewModel.setGotoVerifyotpPageStatus(true)
+                SharedPref.addString(Constants.VERIFICATION,verificationId)
             }
         }
         val options = PhoneAuthOptions.newBuilder(mAuth)
             .setPhoneNumber("+91"+phoneNumber.text.toString().trim())       // Phone number to verify
             .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-            .setActivity(this)                 // Activity (for callback binding)
+            .setActivity(requireActivity())                 // Activity (for callback binding)
             .setCallbacks(mCallback)          // OnVerificationStateChangedCallbacks
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
+
 }

@@ -7,4 +7,6 @@
     <string name="policy"><![CDATA[हमारी गोपनीयता नीति पढ़ें। सेवा की शर्तें स्वीकार करने के लिए "सहमत और जारी रखें" पर टैप करें]]></string>
     <string name="request_otp">अनुरोध ओटीपी</string>
     <string name="from_jayesh_kumar">From\nJayesh Kumar</string>
+    <string name="set_up_your_profile">अपना प्रोफ़ाइल सेट करें</string>
+    <string name="save_and_enjoy">सहेजें पर क्लिक करें और अपने दोस्तों के साथ चैट करना शुरू करें</string>
 </resources>
