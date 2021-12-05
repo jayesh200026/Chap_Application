@@ -5,4 +5,9 @@
     <string name="enter_code">Enter SMS Code</string>
     <string name="request_otp">Request OTP</string>
     <string name="from_jayesh_kumar">From\nJayesh Kumar</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="set_up_your_profile">Set Up Your Profile</string>
+    <string name="save_and_enjoy">Click Save and start chatting with your friends</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
