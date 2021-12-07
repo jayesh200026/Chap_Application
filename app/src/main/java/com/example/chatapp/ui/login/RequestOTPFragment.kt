@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.example.chatapp.R
@@ -39,6 +40,7 @@ class RequestOTPFragment : Fragment() {
             requireActivity(),
             SharedViewModelFactory()
         )[SharedViewModel::class.java]
+        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
         mAuth = FirebaseAuth.getInstance()
         requestOtp = view.findViewById(R.id.requestOtpbtn)
         phoneNumber = view.findViewById(R.id.phoneNumber)

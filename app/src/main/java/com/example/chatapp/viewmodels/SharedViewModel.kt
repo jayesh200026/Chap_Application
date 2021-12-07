@@ -20,6 +20,9 @@ class SharedViewModel : ViewModel() {
     val _gotoEditProfilePageStatus = MutableLiveData<Boolean>()
     val gotoEditProfilePageStatus = _gotoEditProfilePageStatus as LiveData<Boolean>
 
+    val _gotoIndividualChatPageStatus = MutableLiveData<Boolean>()
+    val gotoIndividualChatPageStatus = _gotoIndividualChatPageStatus as LiveData<Boolean>
+
     fun setGotoSetProfilePage(status: Boolean) {
         _gotoSetProfilePageStatus.value = status
     }
@@ -38,6 +41,10 @@ class SharedViewModel : ViewModel() {
 
     fun setGotoEditProfilePage(b: Boolean) {
         _gotoEditProfilePageStatus.value = b
+    }
+
+    fun setGotoIndividualChatStatus(b: Boolean) {
+        _gotoIndividualChatPageStatus.value = b
     }
 
 }

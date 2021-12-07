@@ -1,4 +1,8 @@
 package com.example.chatapp.service.model
 
-class User(val userName: String,val status: String) {
+import android.net.Uri
+import java.io.Serializable
+
+class User(val userName: String,val status: String,val uri: String): Serializable {
+
 }

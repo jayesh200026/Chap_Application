@@ -13,6 +13,10 @@ import kotlinx.coroutines.launch
 class AddUserDetailViewModel : ViewModel() {
     val _addUserDetailsStatus = MutableLiveData<Boolean>()
     val addUserDetailsStatus = _addUserDetailsStatus as LiveData<Boolean>
+
+    val _addProfilePicStatus = MutableLiveData<Uri?>()
+    val addProfilePicStatus = _addProfilePicStatus as LiveData<Uri?>
+
     fun addUserDetails(user: User) {
         viewModelScope.launch {
             val firestoreStatus = DatabaseService.addUser(user)
@@ -21,9 +25,10 @@ class AddUserDetailViewModel : ViewModel() {
         }
     }
 
-    fun addProfilePic(it: Uri) {
+    fun addProfilePic(it: Uri?) {
         viewModelScope.launch {
-            DatabaseService.uploadProfilephoto(it)
+            val status = DatabaseService.uploadProfilephoto(it)
+            _addProfilePicStatus.value = status
         }
     }
 }

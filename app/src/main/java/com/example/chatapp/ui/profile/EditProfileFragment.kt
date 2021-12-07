@@ -1,6 +1,8 @@
 package com.example.chatapp.ui.profile
 
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +13,11 @@ import android.widget.ImageView
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.chatapp.R
 import com.example.chatapp.service.model.User
 import com.example.chatapp.viewmodels.EditProfileViewModel
@@ -23,6 +27,8 @@ import com.example.chatapp.viewmodels.SharedViewModelFactory
 import com.mikhaellopez.circularimageview.CircularImageView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_edit_profile.*
+import java.net.URI
+import java.net.URL
 
 
 class EditProfileFragment : Fragment() {
@@ -34,6 +40,7 @@ class EditProfileFragment : Fragment() {
     lateinit var saveBtn: Button
     lateinit var profilePhoto: CircularImageView
     lateinit var getImage: ActivityResultLauncher<String>
+    var uri: Uri? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,7 +59,7 @@ class EditProfileFragment : Fragment() {
         status = view.findViewById(R.id.editstatus_et)
         saveBtn = view.findViewById(R.id.savechangesBtn)
         profilePhoto = view.findViewById(R.id.editPhoto)
-        editProfileViewModel.fetchProfilepic()
+        // editProfileViewModel.fetchProfilepic()
         editProfileViewModel.fetchUserDetails()
         backBtn.setOnClickListener {
             sharedViewModel.setGotoHomePageStatus(true)
@@ -61,6 +68,7 @@ class EditProfileFragment : Fragment() {
             ActivityResultContracts.GetContent(),
             ActivityResultCallback {
                 if (it != null) {
+                    uri = it
                     profilePhoto.setImageURI(it)
                     editProfileViewModel.uploadProfilePic(it)
                 }
@@ -69,19 +77,19 @@ class EditProfileFragment : Fragment() {
         profilePhoto.setOnClickListener {
             getImage.launch("image/*")
         }
-       username.setOnFocusChangeListener { view, b ->
-           if(b){
-               saveBtn.isVisible = true
-           }
-       }
+        username.setOnFocusChangeListener { view, b ->
+            if (b) {
+                saveBtn.isVisible = true
+            }
+        }
         status.setOnFocusChangeListener { view, b ->
-            if(b){
+            if (b) {
                 saveBtn.isVisible = true
             }
         }
         saveBtn.setOnClickListener {
-            if(username.text.toString().isNotEmpty() && status.text.toString().isNotEmpty()){
-                val user = User(username.text.toString(), status.text.toString())
+            if (username.text.toString().isNotEmpty() && status.text.toString().isNotEmpty()) {
+                val user = User(username.text.toString(), status.text.toString(), uri.toString())
                 editProfileViewModel.addUserDetails(user)
             }
         }
@@ -89,27 +97,35 @@ class EditProfileFragment : Fragment() {
         return view
     }
 
+
     private fun observe() {
-        editProfileViewModel.profilePhotoStatus.observe(viewLifecycleOwner){
-            if(it != null){
-               Picasso.get().load(it).into(profilePhoto)
+        editProfileViewModel.profilePhotoStatus.observe(viewLifecycleOwner) {
+            if (it != null) {
+                uri = it
+                Glide.with(requireContext())
+                    .load(it)
+                    .into(profilePhoto)
             }
         }
-        editProfileViewModel.userDetailsStatus.observe(viewLifecycleOwner){
-            if(it != null){
-                if(it.userName == "null" && it.status == "null"){
+        editProfileViewModel.userDetailsStatus.observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it.userName == "null" && it.status == "null") {
                     username.hint = "UserName"
                     status.hint = "Status"
-                }
-                else {
+                } else {
+                    Log.d("uri", "" + it.uri)
                     username.setText(it.userName)
                     status.setText(it.status)
-                }
+                    Glide.with(requireContext())
+                        .load(it.uri)
+                        .centerInside()
+                        .into(profilePhoto)
 
+                }
             }
         }
-        editProfileViewModel.addUserDetailsStatus.observe(viewLifecycleOwner){
-            if(it){
+        editProfileViewModel.addUserDetailsStatus.observe(viewLifecycleOwner) {
+            if (it) {
                 sharedViewModel.setGotoHomePageStatus(true)
             }
         }

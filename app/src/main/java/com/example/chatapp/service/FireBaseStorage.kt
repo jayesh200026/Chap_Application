@@ -6,17 +6,20 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlin.coroutines.suspendCoroutine
 
 object FireBaseStorage {
-    suspend fun uploadprofile(profile: Uri): Boolean {
+    suspend fun uploadprofile(profile: Uri?): Uri {
         return suspendCoroutine { cont ->
             val uid = FirebaseAuth.getInstance().currentUser?.uid
-            if (uid != null) {
+            if (uid != null && profile != null) {
                 val storageRef = FirebaseStorage.getInstance().reference
                 storageRef.child("users/" + uid + ".jpg")
                     .putFile(profile)
                     .addOnSuccessListener {
-                        cont.resumeWith(Result.success(true))
-                    }
-                    .addOnFailureListener {
+                        it.storage.downloadUrl.addOnSuccessListener {
+                            cont.resumeWith(Result.success(it))
+                        }.addOnFailureListener {
+                            cont.resumeWith(Result.failure(it))
+                        }
+                    }.addOnFailureListener {
                         cont.resumeWith(Result.failure(it))
                     }
             }
@@ -24,18 +27,18 @@ object FireBaseStorage {
     }
 
     suspend fun fetchProfile(): Uri? {
-       return suspendCoroutine {cont ->
-           val uid = FirebaseAuth.getInstance().currentUser?.uid
-           if(uid != null){
-               val storageRef =  FirebaseStorage.getInstance().reference
-               val filerRef = storageRef.child("users/" + uid + ".jpg")
-               filerRef.downloadUrl.addOnSuccessListener {
+        return suspendCoroutine { cont ->
+            val uid = FirebaseAuth.getInstance().currentUser?.uid
+            if (uid != null) {
+                val storageRef = FirebaseStorage.getInstance().reference
+                val filerRef = storageRef.child("users/" + uid + ".jpg")
+                filerRef.downloadUrl.addOnSuccessListener {
                     cont.resumeWith(Result.success(it))
-               }
-                   .addOnFailureListener {
-                    cont.resumeWith(Result.success(null))
-                   }
-           }
-       }
+                }
+                    .addOnFailureListener {
+                        cont.resumeWith(Result.success(null))
+                    }
+            }
+        }
     }
 }
