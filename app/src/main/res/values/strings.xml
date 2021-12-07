@@ -3,11 +3,15 @@
     <string name="welcome_to_chat_app">Welcome to Chat App</string>
     <string name="policy"><![CDATA[Read our Privacy Policy. Tap “Agree & Continue” to accept the Terms of Service.]]></string>
     <string name="enter_code">Enter SMS Code</string>
-    <string name="request_otp">Request OTP</string>
+    <string name="request_otp">Send</string>
     <string name="from_jayesh_kumar">From\nJayesh Kumar</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="set_up_your_profile">Set Up Your Profile</string>
     <string name="save_and_enjoy">Click Save and start chatting with your friends</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="done">Done</string>
+    <string name="chat">Chat</string>
+    <string name="group_chat">Group Chat</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

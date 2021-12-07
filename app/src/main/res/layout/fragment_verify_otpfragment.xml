@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.login.VerifyOTPFragment">
+    tools:context=".ui.login.VerifyOTPFragment"
+    android:background="@drawable/whatsapp_dark">
 
     <ImageView
         android:id="@+id/imageView"
@@ -28,6 +29,7 @@
         android:fontFamily="sans-serif-condensed"
         android:gravity="center"
         android:text="@string/welcome_to_chat_app"
+        android:textColor="@color/white"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,6 +44,7 @@
         android:layout_marginEnd="64dp"
         android:ems="10"
         android:inputType="phone"
+        android:hint="- - - - - -"
         android:gravity="center_horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,11 +54,12 @@
         android:id="@+id/verifyOtpbtn"
         android:layout_width="0dp"
         android:layout_height="45dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="64dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="64dp"
         android:background="@drawable/roundedbutton"
-        android:text="Verify"
+        android:text="@string/done"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etOtp" />
@@ -70,6 +74,7 @@
         android:text="@string/enter_code"
         android:gravity="center"
         android:textSize="14sp"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />

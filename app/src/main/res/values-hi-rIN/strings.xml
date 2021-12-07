@@ -9,4 +9,7 @@
     <string name="from_jayesh_kumar">From\nJayesh Kumar</string>
     <string name="set_up_your_profile">अपना प्रोफ़ाइल सेट करें</string>
     <string name="save_and_enjoy">सहेजें पर क्लिक करें और अपने दोस्तों के साथ चैट करना शुरू करें</string>
+    <string name="done">आगे बढ़ो</string>
+    <string name="chat">बातचीत</string>
+    <string name="group_chat">समूह बातचीत</string>
 </resources>

@@ -2,7 +2,10 @@ package com.example.chatapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
+import com.example.chatapp.ui.chats.IndividualChatFragment
 import com.example.chatapp.ui.profile.AddUserDetailFragment
 import com.example.chatapp.ui.home.HomeFragment
 import com.example.chatapp.ui.login.RequestOTPFragment
@@ -16,11 +19,14 @@ import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
     lateinit var sharedViewModel: SharedViewModel
+    lateinit var toolbar: androidx.appcompat.widget.Toolbar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         SharedPref.initSharedPref(this)
-        val loginStatus = intent.getStringExtra(Constants.LOGIN)
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         sharedViewModel = ViewModelProvider(
             this@MainActivity,
             SharedViewModelFactory()
@@ -66,6 +72,18 @@ class MainActivity : AppCompatActivity() {
                 gotoEditProfilePage()
             }
         })
+        sharedViewModel.gotoIndividualChatPageStatus.observe(this, {
+            if (it) {
+                gotoIndividualChatPage()
+            }
+        })
+    }
+
+    private fun gotoIndividualChatPage() {
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.flFragment, IndividualChatFragment())
+            commit()
+        }
     }
 
     private fun gotoEditProfilePage() {
@@ -95,5 +113,27 @@ class MainActivity : AppCompatActivity() {
             replace(R.id.flFragment, HomeFragment())
             commit()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.usermenu, menu)
+        return true
+//        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item?.itemId) {
+            R.id.settings -> {
+
+            }
+            R.id.profile -> {
+                sharedViewModel.setGotoEditProfilePage(true)
+            }
+            R.id.logoutMenu -> {
+                FirebaseAuth.getInstance().signOut()
+                sharedViewModel.setGotoRequestOtpStatus(true)
+            }
+        }
+        return true
     }
 }

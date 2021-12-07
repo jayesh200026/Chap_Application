@@ -1,24 +1,32 @@
 package com.example.chatapp.ui.home
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.PopupMenu
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.example.chatapp.R
+import com.example.chatapp.service.model.Chat
+import com.example.chatapp.ui.chats.ChatAdapter
+import com.example.chatapp.ui.chats.ChatFragment
+import com.example.chatapp.ui.chats.GroupFragment
+import com.example.chatapp.ui.chats.ViewPagerAdapter
 import com.example.chatapp.viewmodels.HomeViewModel
 import com.example.chatapp.viewmodels.HomeViewModelFactory
 import com.example.chatapp.viewmodels.SharedViewModel
 import com.example.chatapp.viewmodels.SharedViewModelFactory
 
-class HomeFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
-    private lateinit var options: ImageView
+class HomeFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var sharedViewModel: SharedViewModel
+    lateinit var viewPager: ViewPager
+    private lateinit var tablayout: com.google.android.material.tabs.TabLayout
+    var list = mutableListOf<Chat>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,11 +41,16 @@ class HomeFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
             requireActivity(),
             SharedViewModelFactory()
         )[SharedViewModel::class.java]
+        (requireActivity() as AppCompatActivity).supportActionBar?.show()
+        tablayout = view.findViewById(R.id.tabLayout)
+        viewPager = view.findViewById(R.id.viewpager)
+        tablayout.setupWithViewPager(viewPager)
+        val vpadpter = ViewPagerAdapter(requireActivity().supportFragmentManager,
+        FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
+        vpadpter.addFragment(ChatFragment(),"CHAT")
+        vpadpter.addFragment(GroupFragment(),"GROUP CHAT")
+        viewPager.adapter = vpadpter
         observe()
-        options = view.findViewById(R.id.options)
-        options.setOnClickListener {
-            showMenu(view)
-        }
         return view
     }
 
@@ -47,27 +60,6 @@ class HomeFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
                 sharedViewModel.setGotoRequestOtpStatus(true)
             }
         }
-    }
 
-    private fun showMenu(view: View?) {
-        val popupMenu = PopupMenu(requireContext(), options)
-        popupMenu.menuInflater.inflate(R.menu.usermenu, popupMenu.menu)
-        popupMenu.setOnMenuItemClickListener(this)
-        popupMenu.show()
-    }
-
-    override fun onMenuItemClick(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.settings -> {
-
-            }
-            R.id.profile -> {
-                sharedViewModel.setGotoEditProfilePage(true)
-            }
-            R.id.logoutMenu -> {
-                homeViewModel.logout()
-            }
-        }
-        return true
     }
 }
