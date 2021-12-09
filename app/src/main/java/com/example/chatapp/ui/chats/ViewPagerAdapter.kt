@@ -1,5 +1,6 @@
 package com.example.chatapp.ui.chats
 
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -18,6 +19,7 @@ class ViewPagerAdapter: FragmentPagerAdapter {
         return fragmentlist[position]
     }
     fun  addFragment(fragment: Fragment,title: String){
+        Log.d("viewpager",title)
         fragmentlist.add(fragment)
         fragmentTitlelist.add(title)
     }

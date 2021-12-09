@@ -1,14 +1,19 @@
 package com.example.chatapp.service
 
 import android.util.Log
-import androidx.core.net.toUri
 import com.example.chatapp.service.model.*
 import com.example.chatapp.util.Constants
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.ProducerScope
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlin.coroutines.suspendCoroutine
 
 object FirestoreDatabase {
@@ -161,13 +166,277 @@ object FirestoreDatabase {
                             )
                         }
                         val chat =
-                            AllMessages(doc.get(Constants.COLUMN_PARTICIPANTS) as ArrayList<String>,
-                            msgList)
+                            AllMessages(
+                                doc.get(Constants.COLUMN_PARTICIPANTS) as ArrayList<String>,
+                                msgList
+                            )
                         Log.d("chatsfromdb", "hd")
                         cont.resumeWith(Result.success(chat))
                     }
             }
         }
 
+    suspend fun addNewMessage(receiver: String?, message: String) {
+        return suspendCoroutine {
+            val sender = FirebaseAuth.getInstance().currentUser?.uid
+            val time = System.currentTimeMillis()
+            if (sender != null && receiver != null) {
+                val key = getDocumentKey(receiver, sender)
+                FirebaseFirestore.getInstance().collection("chats")
+                    .document(key)
+                    .get()
+                    .addOnSuccessListener {
+                        val reference = it.reference
+                        val participantslist = arrayListOf(sender, receiver)
+                        val participantsMap = hashMapOf("participants" to participantslist)
+                        reference.set(participantsMap)
+                        reference.collection(Constants.MESSAGES)
+                            .document()
+                            .get()
+                            .addOnSuccessListener {
+                                val messageId = it.id
+                                val chat = Chats(
+                                    messageId = messageId,
+                                    receiverId = receiver,
+                                    senderId = sender,
+                                    message = message,
+                                    messageType = "text",
+                                    sentTime = time
+                                )
+                                it.reference.set(chat)
+                                    .addOnSuccessListener {
+                                        Log.d("add", "added new chat")
+                                    }
+                            }
+                    }
+            }
+        }
 
+
+    }
+
+    private fun getDocumentKey(receiver: String, sender: String): String {
+        if (sender > receiver) {
+            return sender + "_" + receiver
+        } else {
+            return receiver + "_" + sender
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    fun subscribeToListener(receiver: String?): Flow<Chats?> {
+        return callbackFlow<Chats?> {
+            val sender = FirebaseAuth.getInstance().currentUser?.uid
+            if (sender != null && receiver != null) {
+                val getdocumentkey = getDocumentKey(receiver, sender)
+                val ref = FirebaseFirestore.getInstance().collection("chats")
+                    .document(getdocumentkey)
+                    .collection(Constants.MESSAGES)
+                    .orderBy(Constants.SENT_TIME, Query.Direction.ASCENDING)
+                    .addSnapshotListener { snapshot, error ->
+                        if (error != null) {
+                            cancel("error fetching collection data at path", error)
+                        }
+                        if (snapshot != null) {
+                            for (document in snapshot.documentChanges) {
+                                if (document.type == DocumentChange.Type.ADDED) {
+                                    val messageid =
+                                        document.document.get(Constants.COLUMN_MESSAGE_ID)
+                                            .toString()
+                                    val senderId =
+                                        document.document.get(Constants.COLUMN_SENDER_ID).toString()
+                                    val receiverId =
+                                        document.document.get(Constants.COLUMN_RECEIVER_ID)
+                                            .toString()
+                                    val message =
+                                        document.document.get(Constants.COLUMN_MESSAGE).toString()
+                                    val messageType =
+                                        document.document.get(Constants.COLUMN_MESSAGE_TYPE)
+                                            .toString()
+                                    val sentTime =
+                                        document.document.get(Constants.SENT_TIME).toString()
+                                            .toLong()
+                                    val chat = Chats(
+                                        messageid,
+                                        senderId,
+                                        receiverId,
+                                        message,
+                                        messageType,
+                                        sentTime
+                                    )
+                                    Log.d("add", "fetching notes")
+                                    offer(chat)
+                                }
+                            }
+                        }
+                    }
+                awaitClose {
+                    ref.remove()
+                }
+
+            }
+        }
+
+
+    }
+
+    suspend fun getGroups(): MutableList<GroupDetails> {
+        return suspendCoroutine { cont ->
+            val grpList = mutableListOf<GroupDetails>()
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+            if (userId != null) {
+                FirebaseFirestore.getInstance().collection(Constants.GROUP_CHAT)
+                    .whereArrayContains(Constants.COLUMN_PARTICIPANTS, userId)
+                    .get()
+                    .addOnSuccessListener {
+                        for (document in it) {
+                            val id = document.id
+                            val groupName = document.get(Constants.NAME).toString()
+                            val grp = GroupDetails(id, groupName)
+                            grpList.add(grp)
+                        }
+                        cont.resumeWith(Result.success(grpList))
+                    }
+                    .addOnFailureListener {
+                        cont.resumeWith(Result.failure(it))
+                    }
+            }
+        }
+    }
+
+    fun subscribeToGroup(groupId: String?): Flow<GroupChat?> {
+        return callbackFlow<GroupChat?> {
+            if (groupId != null) {
+                val ref = FirebaseFirestore.getInstance().collection(Constants.GROUP_CHAT)
+                    .document(groupId)
+                    .collection(Constants.MESSAGES)
+                    .orderBy(Constants.SENT_TIME, Query.Direction.ASCENDING)
+                    .addSnapshotListener { snapshot, error ->
+                        if (error != null) {
+                            cancel("error fetching collection data at path", error)
+                        }
+                        if (snapshot != null) {
+                            for (document in snapshot.documentChanges) {
+                                if (document.type == DocumentChange.Type.ADDED) {
+                                    val messageid =
+                                        document.document.get(Constants.COLUMN_MESSAGE_ID)
+                                            .toString()
+                                    val senderId =
+                                        document.document.get(Constants.COLUMN_SENDER_ID).toString()
+                                    val message =
+                                        document.document.get(Constants.COLUMN_MESSAGE).toString()
+                                    val messageType =
+                                        document.document.get(Constants.COLUMN_MESSAGE_TYPE)
+                                            .toString()
+                                    val sentTime =
+                                        document.document.get(Constants.SENT_TIME).toString()
+                                            .toLong()
+                                    val chat = GroupChat(
+                                        messageId = messageid,
+                                        senderId = senderId,
+                                        message = message,
+                                        messageType = messageType,
+                                        sentTime = sentTime
+                                    )
+                                    offer(chat)
+                                }
+                            }
+                        }
+                    }
+                awaitClose {
+                    ref.remove()
+                }
+            }
+        }
+    }
+
+    suspend fun addnewgrpMessage(groupId: String?, message: String): Boolean {
+        return suspendCoroutine { cont ->
+            val time = System.currentTimeMillis()
+            val senderId = FirebaseAuth.getInstance().currentUser?.uid
+            if (groupId != null && senderId != null) {
+                FirebaseFirestore.getInstance().collection(Constants.GROUP_CHAT)
+                    .document(groupId)
+                    .get()
+                    .addOnSuccessListener {
+                        val reference = it.reference
+                        reference.collection(Constants.MESSAGES)
+                            .document()
+                            .get()
+                            .addOnSuccessListener {
+                                val messageId = it.id
+                                val message = GroupChat(
+                                    message, messageId,
+                                    "text", senderId, time
+                                )
+                                it.reference.set(message)
+                                    .addOnSuccessListener {
+                                        cont.resumeWith(Result.success(true))
+                                    }
+                            }
+                    }
+            }
+        }
+
+    }
+
+    fun getAllUsersFromDb(): Flow<ArrayList<UserWithID>?> {
+
+        return callbackFlow {
+            val uid = FirebaseAuth.getInstance().currentUser?.uid
+            val userList = ArrayList<UserWithID>()
+            val ref = FirebaseFirestore.getInstance().collection("users")
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        this.offer(null)
+                        error.printStackTrace()
+                    } else {
+                        if (snapshot != null) {
+                            for (doc in snapshot.documentChanges) {
+                                if (doc.type == DocumentChange.Type.ADDED) {
+                                    val item = doc.document
+                                    if (item.id == uid) {
+                                        continue
+                                    } else {
+                                        val id = item.id.toString()
+                                        val name = item.get(Constants.COLUMN_NAME).toString()
+                                        val status = item.get(Constants.COLUMN_STATUS).toString()
+                                        val uri = item.get(Constants.COLUMN_URI).toString()
+                                        val user = UserWithID(id, name, status, uri)
+                                        userList.add(user)
+                                    }
+                                }
+                            }
+                            this.offer(userList)
+                        }
+                    }
+                }
+            awaitClose {
+                ref.remove()
+            }
+        }
+
+    }
+
+    suspend fun createGrp(name: String,list: ArrayList<String>?): Boolean {
+        return suspendCoroutine {cont ->
+            val uid = FirebaseAuth.getInstance().currentUser?.uid
+            if(uid != null && list != null){
+                list.add(uid)
+                val group = CreateGroup(name,list)
+                FirebaseFirestore.getInstance().collection(Constants.GROUP_CHAT)
+                    .document()
+                    .set(group)
+                    .addOnSuccessListener {
+                        cont.resumeWith(Result.success(true))
+                    }
+                    .addOnFailureListener {
+                        cont.resumeWith(Result.failure(it))
+                    }
+            }
+        }
+
+    }
 }
+
+

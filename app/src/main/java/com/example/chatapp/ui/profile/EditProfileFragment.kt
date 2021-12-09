@@ -13,6 +13,7 @@ import android.widget.ImageView
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
@@ -46,6 +47,7 @@ class EditProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_edit_profile, container, false)
+        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
         editProfileViewModel = ViewModelProvider(
             this,
             EditProfileViewModelFactory()
@@ -108,19 +110,20 @@ class EditProfileFragment : Fragment() {
             }
         }
         editProfileViewModel.userDetailsStatus.observe(viewLifecycleOwner) {
+
             if (it != null) {
-                if (it.userName == "null" && it.status == "null") {
-                    username.hint = "UserName"
-                    status.hint = "Status"
-                } else {
-                    Log.d("uri", "" + it.uri)
-                    username.setText(it.userName)
-                    status.setText(it.status)
+                if(it.uri != ""){
                     Glide.with(requireContext())
                         .load(it.uri)
                         .centerInside()
                         .into(profilePhoto)
-
+                }
+                if (it.userName == "null" && it.status == "null") {
+                    username.hint = "UserName"
+                    status.hint = "Status"
+                } else {
+                    username.setText(it.userName)
+                    status.setText(it.status)
                 }
             }
         }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
+import com.example.chatapp.ui.chats.GroupChatPageFragment
 import com.example.chatapp.ui.chats.IndividualChatFragment
 import com.example.chatapp.ui.profile.AddUserDetailFragment
 import com.example.chatapp.ui.home.HomeFragment
@@ -77,6 +78,18 @@ class MainActivity : AppCompatActivity() {
                 gotoIndividualChatPage()
             }
         })
+        sharedViewModel.gotoGroupChatPageStatus.observe(this,{
+            if(it){
+                gotoGroupChatPage()
+            }
+        })
+    }
+
+    private fun gotoGroupChatPage() {
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.flFragment, GroupChatPageFragment())
+            commit()
+        }
     }
 
     private fun gotoIndividualChatPage() {

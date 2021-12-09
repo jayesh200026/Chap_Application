@@ -9,9 +9,9 @@
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/chatuserpic"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="24dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,13 +23,13 @@
         android:id="@+id/chatusername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="32dp"
-        android:text="name"
-        android:textSize="18.54sp"
         android:fontFamily="sans-serif-condensed"
+        android:text="name"
         android:textColor="#D4DCDF"
+        android:textSize="18.54sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/chatuserpic"
         app:layout_constraintTop_toTopOf="parent" />
@@ -41,6 +41,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:text="time"
+        android:visibility="gone"
         android:textColor="#939CA1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

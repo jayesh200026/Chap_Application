@@ -1,11 +1,10 @@
 package com.example.chatapp.service.model
 
-data class Chats(
-    val messageId: String,
-    val senderId: String,
-    val receiverId: String,
+data class GroupChat(
     val message: String,
+    val messageId: String,
     val messageType: String,
+    val senderId: String,
     val sentTime: Long
 ) {
 }

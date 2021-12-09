@@ -1,60 +1,90 @@
 package com.example.chatapp.ui.chats
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
+import com.example.chatapp.service.model.GroupDetails
+import com.example.chatapp.ui.OnItemClickListener
+import com.example.chatapp.util.Constants
+import com.example.chatapp.util.SharedPref
+import com.example.chatapp.viewmodels.GroupVPViewModel
+import com.example.chatapp.viewmodels.GroupVPViewModelFactory
+import com.example.chatapp.viewmodels.SharedViewModel
+import com.example.chatapp.viewmodels.SharedViewModelFactory
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [GroupFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class GroupFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    lateinit var recyclerView: RecyclerView
+    lateinit var progressBar: ProgressBar
+    private lateinit var adapter: GroupAdapter
+    lateinit var sharedViewModel: SharedViewModel
+    lateinit var groupVpViewModel: GroupVPViewModel
+    lateinit var addFab: FloatingActionButton
+    var grpList = mutableListOf<GroupDetails>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_group, container, false)
+        val view = inflater.inflate(R.layout.fragment_chat, container, false)
+        recyclerView = view.findViewById(R.id.rvChats)
+        progressBar = view.findViewById(R.id.chatPB)
+        addFab = view.findViewById(R.id.group_fragment_floating_button)
+        addFab.isVisible = true
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        adapter = GroupAdapter(grpList)
+        recyclerView.adapter = adapter
+        adapter.setOnItemClickListner(object : OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                SharedPref.addString(Constants.GROUP_ID, grpList[position].groupId)
+                SharedPref.addString(Constants.GROUP_NAME, grpList[position].groupName)
+                sharedViewModel.setGotoGroupChatPage(true)
+            }
+        })
+        sharedViewModel = ViewModelProvider(
+            requireActivity(),
+            SharedViewModelFactory()
+        )[SharedViewModel::class.java]
+        groupVpViewModel = ViewModelProvider(
+            this,
+            GroupVPViewModelFactory()
+        )[GroupVPViewModel::class.java]
+        addFab.setOnClickListener {
+            gotoSelectUserForGroupPage()
+        }
+        getgroups()
+        observe()
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment GroupFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            GroupFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun gotoSelectUserForGroupPage() {
+        activity?.run {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.flFragment, AddUserToGrpFragment()).commit()
+        }
     }
+
+    private fun observe() {
+        groupVpViewModel.grpListStatus.observe(viewLifecycleOwner) {
+            grpList.clear()
+            for (i in it) {
+                grpList.add(i)
+                adapter.notifyItemInserted(grpList.size - 1)
+            }
+        }
+    }
+
+    private fun getgroups() {
+        groupVpViewModel.getGroups()
+    }
+
+
 }

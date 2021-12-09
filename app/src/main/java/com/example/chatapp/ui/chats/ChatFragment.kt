@@ -60,7 +60,6 @@ class ChatFragment : Fragment() {
 
         })
         readChats()
-        //getAlluserDetails()
         observe()
         return view
     }
@@ -79,15 +78,6 @@ class ChatFragment : Fragment() {
                 adapter.notifyItemInserted(chatList.size - 1)
             }
         }
-//        chatFragmentviewModel.userdetailsStatus.observe(viewLifecycleOwner){
-//            chatList.clear()
-//            for(i in it){
-//                if(i.userId in participantList){
-//                    chatList.add(i)
-//                    adapter.notifyItemInserted(chatList.size - 1)
-//                }
-//            }
-//        }
     }
 
     private fun readChats() {

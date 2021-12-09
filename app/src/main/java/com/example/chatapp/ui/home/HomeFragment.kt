@@ -44,8 +44,9 @@ class HomeFragment : Fragment() {
         (requireActivity() as AppCompatActivity).supportActionBar?.show()
         tablayout = view.findViewById(R.id.tabLayout)
         viewPager = view.findViewById(R.id.viewpager)
+        viewPager.offscreenPageLimit = 2
         tablayout.setupWithViewPager(viewPager)
-        val vpadpter = ViewPagerAdapter(requireActivity().supportFragmentManager,
+        val vpadpter = ViewPagerAdapter(childFragmentManager,
         FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
         vpadpter.addFragment(ChatFragment(),"CHAT")
         vpadpter.addFragment(GroupFragment(),"GROUP CHAT")
@@ -60,6 +61,5 @@ class HomeFragment : Fragment() {
                 sharedViewModel.setGotoRequestOtpStatus(true)
             }
         }
-
     }
 }
