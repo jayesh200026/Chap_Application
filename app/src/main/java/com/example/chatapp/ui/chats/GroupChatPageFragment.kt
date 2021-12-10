@@ -1,5 +1,7 @@
 package com.example.chatapp.ui.chats
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -34,15 +36,16 @@ class GroupChatPageFragment : Fragment() {
     lateinit var backBtn: ImageView
     lateinit var sendBtn : ImageButton
     lateinit var chatMessage: EditText
+    lateinit var imageMsg: ImageView
     val list = mutableListOf<GroupChat>()
-
+    var groupId = SharedPref.get(Constants.GROUP_ID)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_group, container, false)
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
-        var groupId = SharedPref.get(Constants.GROUP_ID)
+
         var groupname = SharedPref.get(Constants.GROUP_NAME)
         groupChatViewModel = ViewModelProvider(
             this,
@@ -53,6 +56,15 @@ class GroupChatPageFragment : Fragment() {
             SharedViewModelFactory()
         )[SharedViewModel::class.java]
         recyclerView = view.findViewById(R.id.rvIndlChat)
+        imageMsg = view.findViewById(R.id.sendPhoto)
+        imageMsg.setOnClickListener {
+            val intent = Intent().apply {
+                type = "image/*"
+                action = Intent.ACTION_GET_CONTENT
+                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg","image/png"))
+            }
+            startActivityForResult(Intent.createChooser(intent,"Select Image"),Constants.RC_SELECT_IMAGE)
+        }
         val layoutMangaer = LinearLayoutManager(requireContext())
         //layoutMangaer.stackFromEnd=  true
         recyclerView.layoutManager = layoutMangaer
@@ -68,30 +80,47 @@ class GroupChatPageFragment : Fragment() {
         sendBtn.setOnClickListener {
             val message = chatMessage.text.toString()
             if(message.isNotEmpty()) {
-                groupChatViewModel.sendMessage(groupId, message)
+                groupChatViewModel.sendMessage(groupId, message,Constants.MESSAGE_TYPE_TEXT)
                 chatMessage.setText("")
             }
         }
         backBtn.setOnClickListener {
             sharedViewModel.setGotoHomePageStatus(true)
         }
+        //getAllUsersDetails()
         getAllChatsOfGroup(groupId)
         observe()
         return  view
     }
 
+    private fun getAllUsersDetails() {
+        groupChatViewModel.getAllUSerDetails()
+    }
+
     private fun observe() {
+        list.clear()
         groupChatViewModel.groupChatMessageStatus.observe(viewLifecycleOwner){
             if(it != null){
                 list.add(it)
                 adapter.notifyItemInserted(list.size - 1)
             }
         }
+        groupChatViewModel.uploadMessageImageStatus.observe(viewLifecycleOwner){
+            if(it != null){
+                groupChatViewModel.sendMessage(groupId, it.toString(),Constants.MESSAGE_TYPE_IMAGE)
+            }
+        }
     }
 
     private fun getAllChatsOfGroup(groupId: String?) {
         groupChatViewModel.getAllChats(groupId)
-
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == Constants.RC_SELECT_IMAGE && resultCode == Activity.RESULT_OK
+            && data != null && data.data != null){
+            val selectedImagePath = data.data
+            groupChatViewModel.uploadMessageImage(selectedImagePath)
+        }
+    }
 }

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/background_left_chat.xml" value="0.11666666666666667" />
         <entry key="app/src/main/res/drawable/background_oval.xml" value="0.10740740740740741" />
         <entry key="app/src/main/res/drawable/background_righr_chat.xml" value="0.11666666666666667" />
@@ -22,22 +23,25 @@
         <entry key="app/src/main/res/layout/chat.xml" value="0.2938775510204082" />
         <entry key="app/src/main/res/layout/fragment_add_user_detail.xml" value="0.2056159420289855" />
         <entry key="app/src/main/res/layout/fragment_add_user_to_grp.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.1994459833795014" />
+        <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_edit_profile.xml" value="0.2064343163538874" />
         <entry key="app/src/main/res/layout/fragment_forgot_password.xml" value="0.10733695652173914" />
-        <entry key="app/src/main/res/layout/fragment_group.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_group.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_group_chat_page.xml" value="0.15989583333333332" />
-        <entry key="app/src/main/res/layout/fragment_group_name.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.165" />
-        <entry key="app/src/main/res/layout/fragment_individual_chat.xml" value="0.24074074074074073" />
+        <entry key="app/src/main/res/layout/fragment_group_name.xml" value="0.45" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_individual_chat.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.10916919959473151" />
         <entry key="app/src/main/res/layout/fragment_registration.xml" value="0.10733695652173914" />
         <entry key="app/src/main/res/layout/fragment_request_o_t_p.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_request_otpfragment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_verify_o_t_p.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_verify_otpfragment.xml" value="0.26885245901639343" />
-        <entry key="app/src/main/res/layout/left_chat.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/right_chat.xml" value="0.13786008230452676" />
+        <entry key="app/src/main/res/layout/image_message_left.xml" value="0.1046875" />
+        <entry key="app/src/main/res/layout/image_message_right.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/left_chat.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/message_rv_item.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/right_chat.xml" value="0.1" />
         <entry key="app/src/main/res/layout/select_user_rv_item.xml" value="0.28125" />
         <entry key="app/src/main/res/menu/usermenu.xml" value="0.14947916666666666" />
       </map>

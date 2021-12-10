@@ -161,7 +161,9 @@ object FirestoreDatabase {
                                     receiverId = msg.getString(Constants.RECEIVERID)!!,
                                     sentTime = msg.getString(Constants.SENT_TIME)!!.toLong(),
                                     message = msg.getString(Constants.TEXT)!!,
-                                    messageType = msg.getString(Constants.MESSAGE_TYPE)!!
+                                    messageType = msg.getString(Constants.MESSAGE_TYPE)!!,
+                                    imageUri = msg.getString(Constants.COLUMN_IMAGE_URI)!!
+
                                 )
                             )
                         }
@@ -176,12 +178,22 @@ object FirestoreDatabase {
             }
         }
 
-    suspend fun addNewMessage(receiver: String?, message: String) {
+    suspend fun addNewMessage(receiver: String?, message: String, type: String) {
         return suspendCoroutine {
             val sender = FirebaseAuth.getInstance().currentUser?.uid
             val time = System.currentTimeMillis()
             if (sender != null && receiver != null) {
                 val key = getDocumentKey(receiver, sender)
+                var imageUri: String
+                var textMessage: String
+
+                if (type == Constants.MESSAGE_TYPE_IMAGE) {
+                    imageUri = message
+                    textMessage = ""
+                } else {
+                    textMessage = message
+                    imageUri = ""
+                }
                 FirebaseFirestore.getInstance().collection("chats")
                     .document(key)
                     .get()
@@ -199,8 +211,9 @@ object FirestoreDatabase {
                                     messageId = messageId,
                                     receiverId = receiver,
                                     senderId = sender,
-                                    message = message,
-                                    messageType = "text",
+                                    message = textMessage,
+                                    messageType = type,
+                                    imageUri = imageUri,
                                     sentTime = time
                                 )
                                 it.reference.set(chat)
@@ -211,8 +224,6 @@ object FirestoreDatabase {
                     }
             }
         }
-
-
     }
 
     private fun getDocumentKey(receiver: String, sender: String): String {
@@ -250,6 +261,8 @@ object FirestoreDatabase {
                                             .toString()
                                     val message =
                                         document.document.get(Constants.COLUMN_MESSAGE).toString()
+                                    val imageUri = document.document.get(Constants.COLUMN_IMAGE_URI)
+                                        .toString()
                                     val messageType =
                                         document.document.get(Constants.COLUMN_MESSAGE_TYPE)
                                             .toString()
@@ -262,6 +275,7 @@ object FirestoreDatabase {
                                         receiverId,
                                         message,
                                         messageType,
+                                        imageUri,
                                         sentTime
                                     )
                                     Log.d("add", "fetching notes")
@@ -331,12 +345,18 @@ object FirestoreDatabase {
                                     val sentTime =
                                         document.document.get(Constants.SENT_TIME).toString()
                                             .toLong()
+                                    val imageUri = document.document.get(Constants.COLUMN_IMAGE_URI)
+                                        .toString()
+                                    val senderName = document.document.get(Constants.COLUMN_SENDER_NAME)
+                                        .toString()
                                     val chat = GroupChat(
                                         messageId = messageid,
                                         senderId = senderId,
+                                        senderName = senderName,
                                         message = message,
                                         messageType = messageType,
-                                        sentTime = sentTime
+                                        sentTime = sentTime,
+                                        imageUri = imageUri
                                     )
                                     offer(chat)
                                 }
@@ -350,10 +370,19 @@ object FirestoreDatabase {
         }
     }
 
-    suspend fun addnewgrpMessage(groupId: String?, message: String): Boolean {
+    suspend fun addnewgrpMessage(groupId: String?,user: User, message: String, type: String): Boolean {
         return suspendCoroutine { cont ->
             val time = System.currentTimeMillis()
             val senderId = FirebaseAuth.getInstance().currentUser?.uid
+            var textMessage: String
+            var imageuri: String
+            if (type == Constants.MESSAGE_TYPE_TEXT) {
+                textMessage = message
+                imageuri = ""
+            } else {
+                imageuri = message
+                textMessage = ""
+            }
             if (groupId != null && senderId != null) {
                 FirebaseFirestore.getInstance().collection(Constants.GROUP_CHAT)
                     .document(groupId)
@@ -366,8 +395,13 @@ object FirestoreDatabase {
                             .addOnSuccessListener {
                                 val messageId = it.id
                                 val message = GroupChat(
-                                    message, messageId,
-                                    "text", senderId, time
+                                    message = textMessage,
+                                    messageId = messageId,
+                                    messageType = type,
+                                    senderId = senderId,
+                                    senderName = user.userName,
+                                    sentTime = time,
+                                    imageUri = imageuri
                                 )
                                 it.reference.set(message)
                                     .addOnSuccessListener {
@@ -418,12 +452,12 @@ object FirestoreDatabase {
 
     }
 
-    suspend fun createGrp(name: String,list: ArrayList<String>?): Boolean {
-        return suspendCoroutine {cont ->
+    suspend fun createGrp(name: String, list: ArrayList<String>?): Boolean {
+        return suspendCoroutine { cont ->
             val uid = FirebaseAuth.getInstance().currentUser?.uid
-            if(uid != null && list != null){
+            if (uid != null && list != null) {
                 list.add(uid)
-                val group = CreateGroup(name,list)
+                val group = CreateGroup(name, list)
                 FirebaseFirestore.getInstance().collection(Constants.GROUP_CHAT)
                     .document()
                     .set(group)
@@ -437,6 +471,7 @@ object FirestoreDatabase {
         }
 
     }
+
 }
 
 

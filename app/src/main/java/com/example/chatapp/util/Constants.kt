@@ -1,6 +1,7 @@
 package com.example.chatapp.util
 
 object Constants {
+    const val RC_SELECT_IMAGE = 2
     val MESSAGE_TYPE = "messagetype"
     val TEXT = "message"
     val RECEIVERID = "receiver"
@@ -27,4 +28,8 @@ object Constants {
     const val NAME = "name"
     const val GROUP_ID = "groupId"
     const val GROUP_NAME = "groupName"
+    const val MESSAGE_TYPE_TEXT = "text"
+    const val MESSAGE_TYPE_IMAGE = "image"
+    const val COLUMN_IMAGE_URI = "imageUri"
+    const val COLUMN_SENDER_NAME = "senderName"
 }

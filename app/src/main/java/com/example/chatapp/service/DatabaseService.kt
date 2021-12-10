@@ -93,9 +93,9 @@ object DatabaseService {
 
     }
 
-    suspend fun addNewMessage(receiver: String?, message: String) {
+    suspend fun addNewMessage(receiver: String?, message: String,type: String) {
         withContext(Dispatchers.IO){
-            FirestoreDatabase.addNewMessage(receiver,message)
+            FirestoreDatabase.addNewMessage(receiver,message,type)
         }
 
     }
@@ -127,9 +127,10 @@ object DatabaseService {
        }
     }
 
-    suspend fun addnewGrpMessage(groupId: String?, message: String) {
+    suspend fun addnewGrpMessage(groupId: String?, message: String,type: String) {
         return withContext(Dispatchers.IO){
-            FirestoreDatabase.addnewgrpMessage(groupId,message)
+            val user = FirestoreDatabase.getUserdetails()
+            FirestoreDatabase.addnewgrpMessage(groupId,user,message,type)
         }
     }
 
@@ -147,5 +148,18 @@ object DatabaseService {
             }
         }
 
+    }
+
+    suspend fun uploadMessageImage(selectedImagePath: Uri?):Uri? {
+        return withContext(Dispatchers.IO){
+            val time = System.currentTimeMillis().toString()
+            try {
+                FireBaseStorage.uploadMessageimages(selectedImagePath, time)
+            }
+            catch (e: Exception){
+                e.printStackTrace()
+                null
+            }
+        }
     }
 }

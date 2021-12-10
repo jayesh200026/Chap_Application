@@ -5,6 +5,8 @@ data class GroupChat(
     val messageId: String,
     val messageType: String,
     val senderId: String,
+    val senderName: String,
+    val imageUri: String,
     val sentTime: Long
 ) {
 }

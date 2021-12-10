@@ -24,9 +24,8 @@ class IndvlChatAdapter(val list: MutableList<Chats>): RecyclerView.Adapter<Indvl
     }
 
     override fun onBindViewHolder(holder: IndvlChatViewHolder, position: Int) {
-        val chat = list[position].message
-        val time = list[position].sentTime
-        holder.bind(chat,time)
+        val chat = list[position]
+        holder.bind(chat)
     }
 
     override fun getItemCount(): Int {

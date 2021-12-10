@@ -1,5 +1,6 @@
 package com.example.chatapp.viewmodels
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,17 +19,20 @@ class IndividualChatViewModel : ViewModel() {
 
     val _chatsStatus = MutableLiveData<Chats?>()
     val chatStatus = _chatsStatus as LiveData<Chats?>
+
+    val _uploadMessageImageStatus = MutableLiveData<Uri?>()
+    val uploadMessageImageStatus = _uploadMessageImageStatus as LiveData<Uri?>
+
     fun getAllChats(participant: String?) {
         viewModelScope.launch {
             val list = DatabaseService.getAllChats(participant)
             _readAllChatsStatsus.value = list
         }
-
     }
 
-    fun sendMessage(receiver: String?, message: String) {
+    fun sendMessage(receiver: String?, message: String, type: String) {
         viewModelScope.launch {
-            DatabaseService.addNewMessage(receiver,message)
+            DatabaseService.addNewMessage(receiver, message, type)
         }
     }
 
@@ -37,6 +41,13 @@ class IndividualChatViewModel : ViewModel() {
             FirestoreDatabase.subscribeToListener(participant).collect {
                 _chatsStatus.value = it
             }
+        }
+    }
+
+    fun uploadMessageImage(selectedImagePath: Uri?) {
+        viewModelScope.launch {
+            val uri = DatabaseService.uploadMessageImage(selectedImagePath)
+            _uploadMessageImageStatus.value = uri
         }
 
     }

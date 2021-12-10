@@ -8,9 +8,9 @@
     android:background="#232D36">
 
     <com.mikhaellopez.circularimageview.CircularImageView
-        android:id="@+id/imageView4"
-        android:layout_width="142dp"
-        android:layout_height="330dp"
+        android:id="@+id/grpPic"
+        android:layout_width="107dp"
+        android:layout_height="85dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:src="@drawable/profile_icon"
@@ -22,25 +22,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="52dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="Type group subject here.."
+        android:inputType="textPersonName"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView4"
+        app:layout_constraintHorizontal_bias="0.146"
+        app:layout_constraintStart_toEndOf="@+id/grpPic"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/saveGrpFAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="208dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginTop="168dp"
+        android:layout_marginEnd="92dp"
         android:src="@drawable/ic_baseline_check_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="72dp"
+        android:background="#101D25"
+        app:layout_constraintBaseline_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/grpPic" />
 </androidx.constraintlayout.widget.ConstraintLayout>

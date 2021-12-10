@@ -6,6 +6,7 @@ data class Chats(
     val receiverId: String,
     val message: String,
     val messageType: String,
+    val imageUri: String,
     val sentTime: Long
 ) {
 }
