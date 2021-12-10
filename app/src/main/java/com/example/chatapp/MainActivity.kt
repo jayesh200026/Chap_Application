@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun gotoHomePage() {
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.flFragment, HomeFragment())
+            add(R.id.flFragment, HomeFragment())
             commit()
         }
     }

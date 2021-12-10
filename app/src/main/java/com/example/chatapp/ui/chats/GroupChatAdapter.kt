@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
 import com.example.chatapp.service.model.GroupChat
+import com.example.chatapp.service.model.UserWithID
 import com.example.chatapp.util.Constants
 import com.google.firebase.auth.FirebaseAuth
 
@@ -26,7 +27,8 @@ class GroupChatAdapter(val list: MutableList<GroupChat>) :
 
     override fun onBindViewHolder(holder: GrouchChatViewHolder, position: Int) {
         val chat = list[position]
-        holder.bind(chat)
+         holder.bind(chat)
+
     }
 
     override fun getItemCount(): Int {

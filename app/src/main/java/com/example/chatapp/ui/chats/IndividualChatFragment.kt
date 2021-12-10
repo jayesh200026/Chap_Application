@@ -1,6 +1,9 @@
 package com.example.chatapp.ui.chats
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -27,14 +30,15 @@ import com.mikhaellopez.circularimageview.CircularImageView
 
 class IndividualChatFragment : Fragment() {
     lateinit var individualChatViewModel: IndividualChatViewModel
-    lateinit var sharedViewModel:SharedViewModel
+    lateinit var sharedViewModel: SharedViewModel
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: IndvlChatAdapter
     lateinit var username: TextView
     lateinit var profilePic: CircularImageView
     lateinit var backBtn: ImageView
-    lateinit var sendBtn : ImageButton
+    lateinit var sendBtn: ImageButton
     lateinit var chatMessage: EditText
+    lateinit var getImage: ImageView
     var list = mutableListOf<Chats>()
 
 
@@ -58,11 +62,28 @@ class IndividualChatFragment : Fragment() {
         backBtn = view.findViewById(R.id.chatBackBtn)
         chatMessage = view.findViewById(R.id.chatET)
         sendBtn = view.findViewById(R.id.chatsendBtn)
+        getImage = view.findViewById(R.id.sendPhoto)
+        getImage.setOnClickListener {
+            val intent = Intent().apply {
+                type = "image/*"
+                action = Intent.ACTION_GET_CONTENT
+                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
+            }
+            startActivityForResult(
+                Intent.createChooser(intent, "Select Image"),
+                Constants.RC_SELECT_IMAGE
+            )
+
+        }
         sendBtn.setOnClickListener {
             val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
             val message = chatMessage.text.toString()
-            if(message.isNotEmpty()) {
-                individualChatViewModel.sendMessage(participant, message)
+            if (message.isNotEmpty()) {
+                individualChatViewModel.sendMessage(
+                    participant,
+                    message,
+                    Constants.MESSAGE_TYPE_TEXT
+                )
                 chatMessage.setText("")
             }
         }
@@ -73,7 +94,7 @@ class IndividualChatFragment : Fragment() {
         username.text = name
         val pic = SharedPref.get(Constants.COLUMN_URI)
         pic?.let {
-            if(it.isNotEmpty()){
+            if (it.isNotEmpty()) {
                 Glide.with(requireContext())
                     .load(it)
                     .centerInside()
@@ -81,11 +102,11 @@ class IndividualChatFragment : Fragment() {
             }
         }
         val layoutMangaer = LinearLayoutManager(requireContext())
-        layoutMangaer.stackFromEnd=  true
+        //layoutMangaer.stackFromEnd=  true
+        layoutMangaer.reverseLayout = true
         recyclerView.layoutManager = layoutMangaer
         adapter = IndvlChatAdapter(list)
         recyclerView.adapter = adapter
-        //getAllChatsBetweenTwoUsers()
         val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
         subscribeToListener(participant)
         observe()
@@ -98,27 +119,24 @@ class IndividualChatFragment : Fragment() {
     }
 
     private fun observe() {
-        val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
-//        individualChatViewModel.readAllChatsStatsus.observe(viewLifecycleOwner){
-//            list.clear()
-//            for(i in 0..it.size-1){
-//                Log.d("chats",it[i].participants.toString())
-//                Log.d("chats","list is"+it[i].messages.toString())
-//                Log.d("chats","participants="+participant)
-//                if(participant in it[i].participants){
-//
-//                    for(chats in it[i].messages){
-//                        Log.d("chatsid",chats.messageId)
-//                        list.add(chats)
-//                        adapter.notifyItemInserted(list.size - 1)
-//                    }
-//                }
-//            }
-//        }
-        individualChatViewModel.chatStatus.observe(viewLifecycleOwner){
-            if(it != null){
-                list.add(it)
-                adapter.notifyItemInserted(list.size - 1)
+        individualChatViewModel.chatStatus.observe(viewLifecycleOwner) {
+            if (it != null) {
+                list.add(0, it)
+                //adapter.notifyItemRangeInserted(list.size-1,1)
+                //adapter.notifyDataSetChanged()
+                adapter.notifyItemInserted(0)
+                recyclerView.scrollToPosition(0)
+                //adapter.notifyItemInserted(list.size-1)
+            }
+        }
+        individualChatViewModel.uploadMessageImageStatus.observe(viewLifecycleOwner) {
+            if (it != null) {
+                val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
+                individualChatViewModel.sendMessage(
+                    participant,
+                    it.toString(),
+                    Constants.MESSAGE_TYPE_IMAGE
+                )
             }
         }
     }
@@ -128,4 +146,13 @@ class IndividualChatFragment : Fragment() {
         individualChatViewModel.getAllChats(participant)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.d("image", "Inside onActivityresult")
+        if (requestCode == Constants.RC_SELECT_IMAGE && resultCode == Activity.RESULT_OK
+            && data != null && data.data != null
+        ) {
+            val selectedImagePath = data.data
+            individualChatViewModel.uploadMessageImage(selectedImagePath)
+        }
+    }
 }
