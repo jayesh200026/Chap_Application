@@ -1,19 +1,19 @@
-package com.example.chatapp.ui.chats
+package com.example.chatapp.ui.viewpager
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
 import com.example.chatapp.service.model.GroupDetails
 import com.example.chatapp.ui.OnItemClickListener
+import com.example.chatapp.ui.chats.creategroup.AddUserToGrpFragment
+import com.example.chatapp.ui.chats.groupchat.GroupChatPageFragment
 import com.example.chatapp.util.Constants
 import com.example.chatapp.util.SharedPref
 import com.example.chatapp.viewmodels.GroupVPViewModel
@@ -38,7 +38,7 @@ class GroupFragment : Fragment() {
         recyclerView = view.findViewById(R.id.rvChats)
         progressBar = view.findViewById(R.id.chatPB)
         addFab = view.findViewById(R.id.group_fragment_floating_button)
-        addFab.isVisible = true
+        //addFab.isVisible = true
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         adapter = GroupAdapter(grpList)
         recyclerView.adapter = adapter
@@ -46,7 +46,13 @@ class GroupFragment : Fragment() {
             override fun onItemClick(position: Int) {
                 SharedPref.addString(Constants.GROUP_ID, grpList[position].groupId)
                 SharedPref.addString(Constants.GROUP_NAME, grpList[position].groupName)
-                sharedViewModel.setGotoGroupChatPage(true)
+                //sharedViewModel.setGotoGroupChatPage(true)
+                requireActivity().supportFragmentManager.beginTransaction().add(R.id.flFragment,
+                    GroupChatPageFragment()
+                )
+                    .addToBackStack(null)
+                    .commit()
+
             }
         })
         sharedViewModel = ViewModelProvider(
@@ -68,7 +74,7 @@ class GroupFragment : Fragment() {
     private fun gotoSelectUserForGroupPage() {
         activity?.run {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.flFragment, AddUserToGrpFragment()).commit()
+                .add(R.id.flFragment, AddUserToGrpFragment()).addToBackStack(null).commit()
         }
     }
 

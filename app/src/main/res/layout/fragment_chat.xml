@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.chats.ChatFragment"
+    tools:context=".ui.viewpager.ChatFragment"
     android:background="#101D25">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -31,14 +31,13 @@
         android:id="@+id/group_fragment_floating_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:src="@drawable/ic_baseline_group_add_24"
-        app:layout_constraintBottom_toBottomOf="@id/rvChats"
-        app:layout_constraintEnd_toEndOf="@id/rvChats"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:background="#00B09C"
-        android:visibility="gone"
-        />
+        android:src="@drawable/ic_baseline_group_add_24"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/rvChats"
+        app:layout_constraintEnd_toEndOf="@id/rvChats" />
 
 
 

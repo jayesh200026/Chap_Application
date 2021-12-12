@@ -4,8 +4,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.chatapp.ui.chats.ChatFragment
-import com.example.chatapp.ui.chats.GroupFragment
+import com.example.chatapp.ui.viewpager.ChatFragment
+import com.example.chatapp.ui.viewpager.GroupFragment
 
 
 class FragmentAdapter(fragmentManager: FragmentManager, lifeCycle: Lifecycle) :

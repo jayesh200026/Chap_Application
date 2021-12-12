@@ -61,8 +61,11 @@ object DatabaseService {
             val list = FirestoreDatabase.readChats()
             val allUsers = FirestoreDatabase.readAllUsers()
             for(i in allUsers){
-                if(i.userId in list){
-                    friends.add(i)
+                for(j in list){
+                    if(i.userId == j.uid){
+                        val chatUser = UserWithID(i.userId,i.userName,j.message,i.uri)
+                        friends.add(chatUser)
+                    }
                 }
             }
             friends
@@ -93,28 +96,33 @@ object DatabaseService {
 
     }
 
-    suspend fun addNewMessage(receiver: String?, message: String,type: String) {
-        withContext(Dispatchers.IO){
-            FirestoreDatabase.addNewMessage(receiver,message,type)
-        }
-
-    }
-
-    suspend fun subcribe(participant: String?): Chats? {
+    suspend fun addNewMessage(receiver: String?, message: String,type: String): Boolean {
         return withContext(Dispatchers.IO){
-            try{
-                FirestoreDatabase.subscribeToListener(participant).collect {
-                    Log.d("chats",it.toString())
-                    it
-                }
-                null
+            try {
+                FirestoreDatabase.addNewMessage(receiver, message, type)
             }catch (e: Exception){
-                null
+                e.printStackTrace()
+                false
             }
-
         }
 
     }
+
+//    suspend fun subcribe(participant: String?): Chats? {
+//        return withContext(Dispatchers.IO){
+//            try{
+//                FirestoreDatabase.subscribeToListener(participant).collect {
+//                    Log.d("chats",it.toString())
+//                    it
+//                }
+//                null
+//            }catch (e: Exception){
+//                null
+//            }
+//
+//        }
+//
+//    }
 
     suspend fun getGroups(): MutableList<GroupDetails> {
        return withContext(Dispatchers.IO){
@@ -127,7 +135,7 @@ object DatabaseService {
        }
     }
 
-    suspend fun addnewGrpMessage(groupId: String?, message: String,type: String) {
+    suspend fun addnewGrpMessage(groupId: String?, message: String,type: String):Boolean {
         return withContext(Dispatchers.IO){
             val user = FirestoreDatabase.getUserdetails()
             FirestoreDatabase.addnewgrpMessage(groupId,user,message,type)
@@ -162,4 +170,5 @@ object DatabaseService {
             }
         }
     }
+
 }

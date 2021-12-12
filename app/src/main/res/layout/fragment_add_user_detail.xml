@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.profile.AddUserDetailFragment">
+    tools:context=".ui.profile.AddUserDetailFragment"
+    android:background="@drawable/whatsapp_dark">
 
 
     <TextView
@@ -16,6 +17,7 @@
         android:layout_marginEnd="16dp"
         android:gravity="center_horizontal|top"
         android:text="@string/set_up_your_profile"
+        android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +45,9 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="UserName"
+        android:textColorHint="@color/white"
         android:paddingLeft="5dp"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/setuserProfile" />
@@ -58,7 +62,9 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="Status"
+        android:textColorHint="@color/white"
         android:paddingLeft="5dp"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/setUsername" />
@@ -72,6 +78,7 @@
         android:layout_marginEnd="16dp"
         android:text="@string/save_and_enjoy"
         android:gravity="center_horizontal|top"
+        android:textColor="@color/white"
         android:textSize="15sp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
@@ -87,6 +94,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:text="Save"
+        android:textColor="@color/white"
         android:background="@drawable/roundedbutton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

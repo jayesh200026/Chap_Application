@@ -3,6 +3,8 @@ package com.example.chatapp.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.chatapp.service.FirebaseAuthentication
+import com.google.firebase.auth.FirebaseUser
 
 class SharedViewModel : ViewModel() {
     val _gotoSetProfilePageStatus = MutableLiveData<Boolean>()
@@ -52,6 +54,10 @@ class SharedViewModel : ViewModel() {
 
     fun setGotoGroupChatPage(b: Boolean) {
         _gotoGroupChatPageStatus.value = b
+    }
+
+    fun getCurrentUser(): FirebaseUser?{
+        return FirebaseAuthentication.getCurrentuser()
     }
 
 }

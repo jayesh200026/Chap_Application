@@ -1,11 +1,11 @@
-package com.example.chatapp.ui.chats
+package com.example.chatapp.ui.chats.creategroup
 
 import android.os.Bundle
-import android.provider.SyncStateContract
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,16 +22,21 @@ class AddUserToGrpFragment : Fragment() {
     lateinit var adapter: GroupChatUserAdapter
     lateinit var fab: FloatingActionButton
     lateinit var adduserToGrpVM: AddUserToGrpVM
+    lateinit var backBtn: ImageButton
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.add_user_to_grp_fragment, container, false)
         fab = view.findViewById(R.id.seletUserFab)
-        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+        //(requireActivity() as AppCompatActivity).supportActionBar?.hide()
         adduserToGrpVM = ViewModelProvider(this,
         AddUserToGrpVMFactory())[AddUserToGrpVM::class.java]
         recyclerView = view.findViewById(R.id.user_list_recycler_view)
+        backBtn = view.findViewById(R.id.user_list_back_button)
+        backBtn.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
+        }
         adapter = GroupChatUserAdapter(adduserToGrpVM.userList,requireContext())
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(true)

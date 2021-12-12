@@ -8,9 +8,7 @@ import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
-import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -61,10 +59,10 @@ object FirestoreDatabase {
         }
     }
 
-    suspend fun readChats(): MutableList<String> {
+    suspend fun readChats(): MutableList<UserLastMessage> {
         return suspendCoroutine { cont ->
             val uid = FirebaseAuth.getInstance().currentUser?.uid
-            val list = mutableListOf<Chat>()
+            val list = mutableListOf<UserLastMessage>()
             val participantList = mutableListOf<String>()
             if (uid != null) {
                 FirebaseFirestore.getInstance().collection("chats")
@@ -76,15 +74,19 @@ object FirestoreDatabase {
                                 documents.get(Constants.COLUMN_PARTICIPANTS) as MutableList<String>
                             Log.d("participants", list1.toString())
                             list1.remove(uid)
-                            participantList.add(list1[0])
-//                            val receiver = documents.get(Constants.COLUMN_RECEIVER_ID).toString()
-//                            val sender = documents.get(Constants.COLUMN_RECEIVER_ID).toString()
-//                            val message = documents.get(Constants.COLUMN_MESSAGE).toString()
-//                            val chat =
-//                                Chat(senderId = sender, receiverId = receiver, message = message)
-//                            list.add(chat)
+                            documents.reference.collection(Constants.MESSAGES)
+                                .orderBy(Constants.SENT_TIME,Query.Direction.ASCENDING)
+                                .limitToLast(1)
+                                .get()
+                                .addOnSuccessListener {
+                                    val lastmessage = it.documents[0].get(Constants.COLUMN_MESSAGE).toString()
+                                    val lastMessage = UserLastMessage(list1[0],lastmessage)
+                                    list.add(lastMessage)
+                                }
+
+                            //participantList.add(list1[0])
                         }
-                        cont.resumeWith(Result.success(participantList))
+                        cont.resumeWith(Result.success(list))
                     }
                     .addOnFailureListener {
                         Log.d("chat", "failed")
@@ -178,8 +180,8 @@ object FirestoreDatabase {
             }
         }
 
-    suspend fun addNewMessage(receiver: String?, message: String, type: String) {
-        return suspendCoroutine {
+    suspend fun addNewMessage(receiver: String?, message: String, type: String): Boolean {
+        return suspendCoroutine { cont ->
             val sender = FirebaseAuth.getInstance().currentUser?.uid
             val time = System.currentTimeMillis()
             if (sender != null && receiver != null) {
@@ -218,7 +220,7 @@ object FirestoreDatabase {
                                 )
                                 it.reference.set(chat)
                                     .addOnSuccessListener {
-                                        Log.d("add", "added new chat")
+                                        cont.resumeWith(Result.success(true))
                                     }
                             }
                     }
@@ -234,6 +236,7 @@ object FirestoreDatabase {
         }
     }
 
+
     @ExperimentalCoroutinesApi
     fun subscribeToListener(receiver: String?): Flow<Chats?> {
         return callbackFlow<Chats?> {
@@ -244,6 +247,7 @@ object FirestoreDatabase {
                     .document(getdocumentkey)
                     .collection(Constants.MESSAGES)
                     .orderBy(Constants.SENT_TIME, Query.Direction.ASCENDING)
+                    .limitToLast(15)
                     .addSnapshotListener { snapshot, error ->
                         if (error != null) {
                             cancel("error fetching collection data at path", error)
@@ -251,6 +255,7 @@ object FirestoreDatabase {
                         if (snapshot != null) {
                             for (document in snapshot.documentChanges) {
                                 if (document.type == DocumentChange.Type.ADDED) {
+                                    Log.d("snapshot", "inside snapshot")
                                     val messageid =
                                         document.document.get(Constants.COLUMN_MESSAGE_ID)
                                             .toString()
@@ -290,8 +295,6 @@ object FirestoreDatabase {
 
             }
         }
-
-
     }
 
     suspend fun getGroups(): MutableList<GroupDetails> {
@@ -347,8 +350,9 @@ object FirestoreDatabase {
                                             .toLong()
                                     val imageUri = document.document.get(Constants.COLUMN_IMAGE_URI)
                                         .toString()
-                                    val senderName = document.document.get(Constants.COLUMN_SENDER_NAME)
-                                        .toString()
+                                    val senderName =
+                                        document.document.get(Constants.COLUMN_SENDER_NAME)
+                                            .toString()
                                     val chat = GroupChat(
                                         messageId = messageid,
                                         senderId = senderId,
@@ -370,7 +374,12 @@ object FirestoreDatabase {
         }
     }
 
-    suspend fun addnewgrpMessage(groupId: String?,user: User, message: String, type: String): Boolean {
+    suspend fun addnewgrpMessage(
+        groupId: String?,
+        user: User,
+        message: String,
+        type: String
+    ): Boolean {
         return suspendCoroutine { cont ->
             val time = System.currentTimeMillis()
             val senderId = FirebaseAuth.getInstance().currentUser?.uid
@@ -469,9 +478,67 @@ object FirestoreDatabase {
                     }
             }
         }
-
     }
 
+    suspend fun loadNextChats(receiver: String?, offset: String): MutableList<Chats> {
+        return suspendCoroutine { cont ->
+            val sender = FirebaseAuth.getInstance().currentUser?.uid
+            val list = mutableListOf<Chats>()
+            if (offset != "" && sender != null && receiver != null) {
+                Log.d("pagination", "oofset $offset")
+                val getdocumentkey = getDocumentKey(receiver, sender)
+                FirebaseFirestore.getInstance().collection("chats")
+                    .document(getdocumentkey)
+                    .collection(Constants.MESSAGES)
+                    .orderBy(Constants.SENT_TIME, Query.Direction.DESCENDING)
+                    .startAfter(offset)
+                    .limitToLast(10)
+                    .get()
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            val querySnapshot = it.result
+                            if (querySnapshot != null) {
+                                for (i in querySnapshot.documents) {
+                                    val messageid =
+                                        i.get(Constants.COLUMN_MESSAGE_ID)
+                                            .toString()
+                                    val senderId =
+                                        i.get(Constants.COLUMN_SENDER_ID).toString()
+                                    val receiverId =
+                                        i.get(Constants.COLUMN_RECEIVER_ID)
+                                            .toString()
+                                    val message =
+                                        i.get(Constants.COLUMN_MESSAGE).toString()
+                                    Log.d("pagination", "querysnapshot size $message")
+                                    val imageUri = i.get(Constants.COLUMN_IMAGE_URI)
+                                        .toString()
+                                    val messageType =
+                                        i.get(Constants.COLUMN_MESSAGE_TYPE)
+                                            .toString()
+                                    val sentTime =
+                                        i.get(Constants.SENT_TIME).toString()
+                                            .toLong()
+                                    val chat = Chats(
+                                        messageid,
+                                        senderId,
+                                        receiverId,
+                                        message,
+                                        messageType,
+                                        imageUri,
+                                        sentTime
+                                    )
+                                    list.add(chat)
+                                }
+                            }
+                            cont.resumeWith(Result.success(list))
+                        } else {
+                            Log.d("pagination", "failed")
+                        }
+                    }
+
+            }
+        }
+    }
 }
 
 

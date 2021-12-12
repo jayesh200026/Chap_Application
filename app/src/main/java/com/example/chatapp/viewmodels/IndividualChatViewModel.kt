@@ -20,6 +20,9 @@ class IndividualChatViewModel : ViewModel() {
     val _chatsStatus = MutableLiveData<Chats?>()
     val chatStatus = _chatsStatus as LiveData<Chats?>
 
+    val _nextchatsStatus = MutableLiveData<MutableList<Chats>>()
+    val nextchatsStatus = _nextchatsStatus as LiveData<MutableList<Chats>>
+
     val _uploadMessageImageStatus = MutableLiveData<Uri?>()
     val uploadMessageImageStatus = _uploadMessageImageStatus as LiveData<Uri?>
 
@@ -49,6 +52,12 @@ class IndividualChatViewModel : ViewModel() {
             val uri = DatabaseService.uploadMessageImage(selectedImagePath)
             _uploadMessageImageStatus.value = uri
         }
+    }
 
+    fun loadNextTenChats(offset: String, participant: String?) {
+        viewModelScope.launch {
+            val list = FirestoreDatabase.loadNextChats(participant, offset)
+            _nextchatsStatus.value = list
+        }
     }
 }

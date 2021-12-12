@@ -5,14 +5,14 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
-import com.example.chatapp.ui.chats.GroupChatPageFragment
-import com.example.chatapp.ui.chats.IndividualChatFragment
+import com.example.chatapp.ui.SplashFragment
+import com.example.chatapp.ui.chats.groupchat.GroupChatPageFragment
+import com.example.chatapp.ui.chats.singlechat.IndividualChatFragment
 import com.example.chatapp.ui.profile.AddUserDetailFragment
 import com.example.chatapp.ui.home.HomeFragment
 import com.example.chatapp.ui.login.RequestOTPFragment
 import com.example.chatapp.ui.login.VerifyOTPFragment
 import com.example.chatapp.ui.profile.EditProfileFragment
-import com.example.chatapp.util.Constants
 import com.example.chatapp.util.SharedPref
 import com.example.chatapp.viewmodels.SharedViewModel
 import com.example.chatapp.viewmodels.SharedViewModelFactory
@@ -27,17 +27,25 @@ class MainActivity : AppCompatActivity() {
         SharedPref.initSharedPref(this)
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.show()
         supportActionBar?.setDisplayShowTitleEnabled(false)
         sharedViewModel = ViewModelProvider(
             this@MainActivity,
             SharedViewModelFactory()
         )[SharedViewModel::class.java]
         observe()
-        if (FirebaseAuth.getInstance().currentUser != null) {
+        if (savedInstanceState == null) {
+            gotoSplashScreen()
+        } else if (sharedViewModel.getCurrentUser() != null) {
             gotoHomePage()
         } else {
             gotoRequestOtp()
         }
+    }
+
+    private fun gotoSplashScreen() {
+        supportFragmentManager.beginTransaction().replace(R.id.flFragment, SplashFragment())
+            .commit()
     }
 
     private fun gotoRequestOtp() {
@@ -78,8 +86,8 @@ class MainActivity : AppCompatActivity() {
                 gotoIndividualChatPage()
             }
         })
-        sharedViewModel.gotoGroupChatPageStatus.observe(this,{
-            if(it){
+        sharedViewModel.gotoGroupChatPageStatus.observe(this, {
+            if (it) {
                 gotoGroupChatPage()
             }
         })
@@ -94,7 +102,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun gotoIndividualChatPage() {
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.flFragment, IndividualChatFragment())
+            add(R.id.flFragment, IndividualChatFragment())
+            addToBackStack(null)
             commit()
         }
     }
@@ -123,7 +132,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun gotoHomePage() {
         supportFragmentManager.beginTransaction().apply {
-            add(R.id.flFragment, HomeFragment())
+            replace(R.id.flFragment, HomeFragment())
             commit()
         }
     }
