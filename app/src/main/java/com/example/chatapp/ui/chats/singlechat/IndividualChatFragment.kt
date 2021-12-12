@@ -1,4 +1,4 @@
-package com.example.chatapp.ui.chats
+package com.example.chatapp.ui.chats.singlechat
 
 import android.app.Activity
 import android.content.Intent
@@ -12,14 +12,15 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
 import com.example.chatapp.service.model.Chats
+import com.example.chatapp.ui.chats.PreviewImageFragment
 import com.example.chatapp.util.Constants
+import com.example.chatapp.util.ImageUri
 import com.example.chatapp.util.SharedPref
 import com.example.chatapp.viewmodels.IndividualChatViewModel
 import com.example.chatapp.viewmodels.IndividualChatviewModelFactory
@@ -40,14 +41,19 @@ class IndividualChatFragment : Fragment() {
     lateinit var chatMessage: EditText
     lateinit var getImage: ImageView
     var list = mutableListOf<Chats>()
-
+    var currentItem: Int = 0
+    var totalCount: Int = 0
+    var scrolledOutItems: Int = 0
+    var offset = ""
+    var previousOffset = ""
+    var isLoading: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_individual_chat, container, false)
-        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+        //(requireActivity() as AppCompatActivity).supportActionBar?.hide()
         individualChatViewModel = ViewModelProvider(
             this,
             IndividualChatviewModelFactory()
@@ -88,7 +94,8 @@ class IndividualChatFragment : Fragment() {
             }
         }
         backBtn.setOnClickListener {
-            sharedViewModel.setGotoHomePageStatus(true)
+//            sharedViewModel.setGotoHomePageStatus(true)
+            requireActivity().supportFragmentManager.popBackStack()
         }
         val name = SharedPref.get(Constants.COLUMN_NAME)
         username.text = name
@@ -107,27 +114,54 @@ class IndividualChatFragment : Fragment() {
         recyclerView.layoutManager = layoutMangaer
         adapter = IndvlChatAdapter(list)
         recyclerView.adapter = adapter
-        val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
-        subscribeToListener(participant)
+        subscribeToListener()
+        recycleViewScrollListener()
+        //loadNextTenChats()
         observe()
         return view
     }
 
-    private fun subscribeToListener(participant: String?) {
-        individualChatViewModel.subscribe(participant)
+    private fun recycleViewScrollListener() {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                Log.d("pagination",offset+"    "+previousOffset)
+                //super.onScrolled(recyclerView, dx, dy)
+                currentItem = (recyclerView.layoutManager as LinearLayoutManager).childCount
+                totalCount = (recyclerView.layoutManager as LinearLayoutManager).itemCount
+                scrolledOutItems = (recyclerView.layoutManager as LinearLayoutManager)
+                    .findFirstVisibleItemPosition()
+                if (!isLoading) {
+                    if ((currentItem + scrolledOutItems) == totalCount && scrolledOutItems >= 0) {
+                        isLoading = true
+                        if (previousOffset != offset) {
+                            Log.d("pagination", "scrolled")
+                            loadNextTenChats()
+                        }
+                    }
+                }
+            }
+        })
+    }
 
+    private fun loadNextTenChats() {
+        val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
+        individualChatViewModel.loadNextTenChats(offset, participant)
+    }
+
+    private fun subscribeToListener() {
+        val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
+        individualChatViewModel.subscribe(participant)
     }
 
     private fun observe() {
         individualChatViewModel.chatStatus.observe(viewLifecycleOwner) {
             if (it != null) {
+                Log.d("pagination", "${it.messageType}")
                 list.add(0, it)
-                //adapter.notifyItemRangeInserted(list.size-1,1)
-                //adapter.notifyDataSetChanged()
                 adapter.notifyItemInserted(0)
                 recyclerView.scrollToPosition(0)
-                //adapter.notifyItemInserted(list.size-1)
             }
+            offset = list[list.size - 1].messageId
         }
         individualChatViewModel.uploadMessageImageStatus.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -137,6 +171,23 @@ class IndividualChatFragment : Fragment() {
                     it.toString(),
                     Constants.MESSAGE_TYPE_IMAGE
                 )
+            }
+        }
+        individualChatViewModel.nextchatsStatus.observe(viewLifecycleOwner) {
+            isLoading = false
+            Log.d("pagination", it.size.toString())
+            previousOffset = offset
+            if (it.size != 0) {
+                for (i in it) {
+                    Log.d("pagination",i.toString())
+                    offset = i.messageId
+                    list.add(i)
+                    adapter.notifyItemInserted(list.size - 1)
+                }
+            }
+            else{
+                offset = ""
+                //previousOffset = ""
             }
         }
     }
@@ -151,8 +202,19 @@ class IndividualChatFragment : Fragment() {
         if (requestCode == Constants.RC_SELECT_IMAGE && resultCode == Activity.RESULT_OK
             && data != null && data.data != null
         ) {
+            val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
             val selectedImagePath = data.data
-            individualChatViewModel.uploadMessageImage(selectedImagePath)
+            val imageUri = ImageUri(selectedImagePath)
+            val bundle = Bundle()
+            bundle.putSerializable(Constants.SENDING_IMAGE_URI, imageUri)
+            bundle.putString(Constants.COLUMN_PARTICIPANTS, participant)
+            bundle.putString("IS_SINGLE","true")
+            val fragment = PreviewImageFragment()
+            fragment.arguments = bundle
+            requireActivity().supportFragmentManager.beginTransaction()
+                .add(R.id.flFragment, fragment)
+                .addToBackStack(null)
+                .commit()
         }
     }
 }

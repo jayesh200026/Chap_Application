@@ -5,19 +5,18 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginEnd="200dp"
-    android:layout_marginBottom="5dp">
+    android:layout_marginBottom="5dp"
+    android:background="@drawable/background_left_chat">
 
     <TextView
         android:id="@+id/senderMsg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
         android:padding="5dp"
         android:paddingBottom="16dp"
         android:textColor="@color/white"
-        android:background="@drawable/background_left_chat"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,11 +26,12 @@
         android:id="@+id/senderName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:textSize="12dp"
+        android:layout_marginStart="8dp"
+        android:paddingRight="8dp"
+        android:textColor="#0000FF"
+        android:textSize="14sp"
         android:visibility="gone"
-        android:textColor="@color/purple_500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,6 +43,6 @@
         android:layout_marginTop="8dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/senderName" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

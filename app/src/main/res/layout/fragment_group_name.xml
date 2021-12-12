@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.chats.GroupNameFragment"
+    tools:context=".ui.chats.creategroup.GroupNameFragment"
     android:background="#232D36">
 
     <com.mikhaellopez.circularimageview.CircularImageView
@@ -39,8 +39,8 @@
         android:id="@+id/saveGrpFAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="168dp"
-        android:layout_marginEnd="92dp"
+        android:layout_marginTop="132dp"
+        android:layout_marginEnd="96dp"
         android:src="@drawable/ic_baseline_check_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -48,7 +48,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="40dp"
         android:background="#101D25"
         app:layout_constraintBaseline_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

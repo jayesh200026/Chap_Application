@@ -1,4 +1,4 @@
-package com.example.chatapp.ui.chats
+package com.example.chatapp.ui.chats.creategroup
 
 import android.content.Context
 import android.view.LayoutInflater

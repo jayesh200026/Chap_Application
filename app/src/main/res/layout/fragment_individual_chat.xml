@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".ui.chats.IndividualChatFragment"
+    tools:context=".ui.chats.singlechat.IndividualChatFragment"
     >
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -29,6 +29,7 @@
         android:id="@+id/bottomChatBar"
         android:layout_width="0dp"
         android:layout_height="50dp"
+        android:layout_marginBottom="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/chatsendBtn"
@@ -44,7 +45,7 @@
             android:layout_marginEnd="60dp"
             android:layout_marginBottom="8dp"
             android:ems="10"
-            android:inputType="textPersonName"
+            android:inputType="textMultiLine"
             android:padding="8dp"
             android:textSize="20sp"
             android:backgroundTint="@android:color/transparent"

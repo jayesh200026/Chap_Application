@@ -3,6 +3,7 @@ package com.example.chatapp.service
 import android.util.Log
 import com.example.chatapp.util.Constants
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.PhoneAuthCredential
 import java.lang.Exception
 import kotlin.coroutines.suspendCoroutine
@@ -35,5 +36,9 @@ object FirebaseAuthentication {
                 cont.resumeWith(Result.success(false))
             }
         }
+    }
+
+    fun getCurrentuser(): FirebaseUser? {
+        return FirebaseAuth.getInstance().currentUser
     }
 }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#101D25"
+    tools:context=".ui.chats.DisplayAllUserFragment"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_layout_user_list_toolbar"
@@ -13,6 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/allUsers"
         android:background="#232D36">
 
         <ImageButton
@@ -36,7 +37,7 @@
             android:layout_marginStart="27dp"
             android:layout_toEndOf="@+id/user_list_back_button"
             android:paddingTop="4dp"
-            android:text="New Group"
+            android:text="New Chat"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/user_list_add_participants_text_view"
@@ -49,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="27dp"
             android:text="Add participants"
+            android:visibility="gone"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -58,23 +60,13 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/user_list_recycler_view"
+        android:background="#101D25"
+        android:id="@+id/allUsers"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraint_layout_user_list_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/seletUserFab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="#00B09C"
-        android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/constraint_layout_user_list_toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

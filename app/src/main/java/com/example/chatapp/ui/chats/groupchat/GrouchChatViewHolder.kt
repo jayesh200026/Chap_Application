@@ -1,4 +1,4 @@
-package com.example.chatapp.ui.chats
+package com.example.chatapp.ui.chats.groupchat
 
 import android.util.Log
 import android.view.View
@@ -20,11 +20,12 @@ class GrouchChatViewHolder(val view: View,val viewType: Int):RecyclerView.ViewHo
             senderName.isVisible = true
             senderName.text = chat.senderName
             if(chat.messageType == Constants.MESSAGE_TYPE_TEXT) {
+                leftImage.isVisible = false
+                senderMessage.isVisible = true
                 senderMessage.text = chat.message
             }
             else{
                 senderMessage.isVisible = false
-                senderName.isVisible =false
                 leftImage.isVisible =true
                 Glide.with(view)
                     .load(chat.imageUri)
@@ -37,6 +38,8 @@ class GrouchChatViewHolder(val view: View,val viewType: Int):RecyclerView.ViewHo
             val rightImage = view.findViewById<ImageView>(R.id.rightImage)
             Log.d("chat","inside right view holder")
             if(chat.messageType == Constants.MESSAGE_TYPE_TEXT) {
+                rightImage.isVisible = false
+                myMessage.isVisible = true
                 myMessage.text = chat.message
             }
             else{

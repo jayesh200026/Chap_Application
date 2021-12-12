@@ -12,15 +12,15 @@ import com.example.chatapp.service.model.Chats
 import com.example.chatapp.util.Constants
 import java.text.DateFormat
 
-class IndvlChatViewHolder(val view: View, val viewType: Int) : RecyclerView.ViewHolder(view) {
+class IndvlChatViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private val senderMessage = view.findViewById<TextView>(R.id.senderMsg)
-    private val myMessage = view.findViewById<TextView>(R.id.myMessage)
+
     private val leftImage = view.findViewById<ImageView>(R.id.leftImage)
-    private val rightImage = view.findViewById<ImageView>(R.id.rightImage)
 
     fun bind(chat: Chats) {
-        if (viewType == Constants.MESSAGE_LEFT) {
             if(chat.messageType == Constants.MESSAGE_TYPE_TEXT){
+                leftImage.isVisible = false
+                senderMessage.isVisible = true
                 senderMessage.text = chat.message
             }
             else if(chat.messageType == Constants.MESSAGE_TYPE_IMAGE){
@@ -28,22 +28,36 @@ class IndvlChatViewHolder(val view: View, val viewType: Int) : RecyclerView.View
                 leftImage.isVisible = true
                 Glide.with(view)
                     .load(chat.imageUri)
-                    .centerInside()
+                    .optionalCenterInside()
                     .into(leftImage)
             }
             Log.d("chat", "inside view holder")
 
-        } else if (viewType == Constants.MESSAGE_RIGHT) {
-            if(chat.messageType == Constants.MESSAGE_TYPE_TEXT) {
-                myMessage.text = chat.message
-            }else if(chat.messageType == Constants.MESSAGE_TYPE_IMAGE){
-                myMessage.isVisible = false
-                rightImage.isVisible = true
-                Glide.with(view)
-                    .load(chat.imageUri)
-                    .centerInside()
-                    .into(rightImage)
-            }
         }
+
+}
+
+class IndvlChatViewHolderRight(val view: View): RecyclerView.ViewHolder(view){
+
+    private val rightImage = view.findViewById<ImageView>(R.id.rightImage)
+    private val myMessage = view.findViewById<TextView>(R.id.myMessage)
+    fun bind(chat: Chats){
+        Log.d("inside bind",chat.messageType)
+        if(chat.messageType == Constants.MESSAGE_TYPE_TEXT){
+            rightImage.isVisible = false
+            myMessage.isVisible = true
+            myMessage.text = chat.message
+        }
+        else if(chat.messageType == Constants.MESSAGE_TYPE_IMAGE){
+            Log.d("duplicate","loading image")
+            myMessage.isVisible = false
+            rightImage.isVisible = true
+            Glide.with(view)
+                .load(chat.imageUri)
+                .optionalCenterInside()
+                .into(rightImage)
+        }
+
     }
+
 }
