@@ -3,6 +3,8 @@ package com.example.chatapp.ui.chats.singlechat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
 import com.example.chatapp.service.model.Chats
@@ -12,6 +14,7 @@ import com.example.chatapp.util.Constants
 import com.google.firebase.auth.FirebaseAuth
 
 class IndvlChatAdapter(val list: MutableList<Chats>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    //private var list = mutableListOf<Chats>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if(viewType == Constants.MESSAGE_LEFT){
             Log.d("chat","left message onviewholder")
@@ -27,6 +30,7 @@ class IndvlChatAdapter(val list: MutableList<Chats>): RecyclerView.Adapter<Recyc
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val chat = list[position]
+
         if(getItemViewType(position) == Constants.MESSAGE_LEFT){
             (holder as IndvlChatViewHolder).bind(chat)
         }
@@ -58,4 +62,12 @@ class IndvlChatAdapter(val list: MutableList<Chats>): RecyclerView.Adapter<Recyc
     override fun getItemId(position: Int): Long {
         return super.getItemId(position)
     }
+
+//    fun setData(newList: MutableList<Chats>){
+//        val diffUtil = IndvlChatDiffUtil(list,newList)
+//        val result = DiffUtil.calculateDiff(diffUtil)
+//        list = newList
+//        Log.d("diffutil","${list.size}   ${newList.size}")
+//        result.dispatchUpdatesTo(this)
+//    }
 }

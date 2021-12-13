@@ -64,6 +64,13 @@ class VerifyOTPFragment : Fragment() {
             if (it == Constants.NEW_USER) {
                 sharedViewModel.setGotoSetProfilePage(true)
             } else if (it == Constants.EXISTING_USER) {
+                val token = SharedPref.get(Constants.DEVICE_TOKEN)
+                verifyOtpViewModel.updateDeviceToken(token)
+
+            }
+        }
+        verifyOtpViewModel.updateDeviceTokenStatus.observe(viewLifecycleOwner){
+            if(it){
                 sharedViewModel.setGotoHomePageStatus(true)
             }
         }

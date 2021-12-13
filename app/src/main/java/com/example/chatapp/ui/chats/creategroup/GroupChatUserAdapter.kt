@@ -9,12 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
+import com.example.chatapp.service.model.UserIDToken
 import com.example.chatapp.service.model.UserWithID
 import com.mikhaellopez.circularimageview.CircularImageView
 
 
 class GroupChatUserAdapter(
-    private val userList: ArrayList<UserWithID>,
+    private val userList: ArrayList<UserIDToken>,
     private val context: Context
 ) : RecyclerView.Adapter<GroupChatUserAdapter.GroupChatUserViewHolder>() {
 
@@ -41,15 +42,15 @@ class GroupChatUserAdapter(
 
         checkBox.setOnClickListener {
             if (checkBox.isChecked) {
-                selectedUser.add(userList[position].userId)
+                selectedUser.add(userList[position].uid)
             } else if (!checkBox.isChecked) {
-                selectedUser.remove(userList[position].userId)
+                selectedUser.remove(userList[position].uid)
             }
         }
         holder.itemView.apply {
-            userName.text = userList[position].userName
-            if (userList[position].uri.isNotBlank()) {
-                Glide.with(context).load(userList[position].uri).dontAnimate()
+            userName.text = userList[position].name
+            if (userList[position].image.isNotBlank()) {
+                Glide.with(context).load(userList[position].image).dontAnimate()
                     .into(profileImage)
             }
         }

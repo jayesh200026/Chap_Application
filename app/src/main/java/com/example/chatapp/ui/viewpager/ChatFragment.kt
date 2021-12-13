@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
+import com.example.chatapp.service.model.UserIDToken
 import com.example.chatapp.service.model.UserWithID
 import com.example.chatapp.ui.OnItemClickListener
 import com.example.chatapp.ui.chats.DisplayAllUserFragment
@@ -35,7 +36,7 @@ class ChatFragment : Fragment() {
     var participantList = mutableListOf<String>()
     var userList = mutableListOf<UserWithID>()
     var userIdList = mutableListOf<String>()
-    var chatList = mutableListOf<UserWithID>()
+    var chatList = mutableListOf<UserIDToken>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,9 +68,10 @@ class ChatFragment : Fragment() {
         recyclerView.adapter = adapter
         adapter.setOnItemClickListner(object : OnItemClickListener {
             override fun onItemClick(position: Int) {
-                SharedPref.addString(Constants.COLUMN_PARTICIPANTS, chatList[position].userId)
-                SharedPref.addString(Constants.COLUMN_URI, chatList[position].uri)
-                SharedPref.addString(Constants.COLUMN_NAME, chatList[position].userName)
+                SharedPref.addString(Constants.COLUMN_PARTICIPANTS, chatList[position].uid)
+                SharedPref.addString(Constants.COLUMN_URI, chatList[position].image)
+                SharedPref.addString(Constants.COLUMN_NAME, chatList[position].name)
+                SharedPref.addString(Constants.PARTICIPANT_TOKEN,chatList[position].token)
                 //sharedViewModel.setGotoIndividualChatStatus(true)
                 requireActivity().supportFragmentManager.beginTransaction().add(
                     R.id.flFragment,
@@ -83,10 +85,6 @@ class ChatFragment : Fragment() {
         readChats()
         observe()
         return view
-    }
-
-    private fun getAlluserDetails() {
-        chatFragmentviewModel.readuserdetails()
     }
 
     private fun observe() {

@@ -1,7 +1,10 @@
 package com.example.chatapp.util
 
 object Constants {
-    const val IMAGE_LEFT =3
+    const val PARTICIPANT_LIST = "participant list"
+    const val CURRENT_USER_USERNAME = "username"
+    const val PARTICIPANT_TOKEN = "participant token"
+    const val IMAGE_LEFT = 3
     const val SENDING_IMAGE_URI = "imageUri"
     const val RC_SELECT_IMAGE = 2
     val MESSAGE_TYPE = "messagetype"
@@ -22,7 +25,7 @@ object Constants {
     const val LOGIN = "login"
     const val COLUMN_STATUS = "status"
     const val COLUMN_NAME = "userName"
-    const val COLUMN_URI = "uri"
+    const val COLUMN_URI = "image"
     const val COLUMN_PARTICIPANTS = "participants"
     const val MESSAGE_LEFT = 0
     const val MESSAGE_RIGHT = 1
@@ -34,5 +37,7 @@ object Constants {
     const val MESSAGE_TYPE_IMAGE = "image"
     const val COLUMN_IMAGE_URI = "imageUri"
     const val COLUMN_SENDER_NAME = "senderName"
-    const val MESSAGE_TOKEN = "token"
+    const val DEVICE_TOKEN = "token"
+    const val ACCESS_TOKEN =
+        "key=AAAAk91SBIs:APA91bHjPc4fMAB_J4IUmUxcbcDudvHZq8ZuuaG6taZbLCrcX7HVD0vu-TZEySIbakURoChHy68JR34mQE_67mSbRgSL8dttpc0trEzS272trUuzl-fdvD06yLh_sB_6TqfVz66VpmH6"
 }

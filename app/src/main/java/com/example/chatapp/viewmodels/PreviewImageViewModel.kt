@@ -1,11 +1,19 @@
 package com.example.chatapp.viewmodels
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatapp.service.DatabaseService
+import com.example.chatapp.service.model.NotificationService
+import com.example.chatapp.service.model.UserIDToken
+import com.example.chatapp.util.Constants
+import com.example.chatapp.util.GroupParticipants
+import com.example.chatapp.util.SharedPref
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessagingService
 import kotlinx.coroutines.launch
 
 class PreviewImageViewModel: ViewModel() {
@@ -32,6 +40,7 @@ class PreviewImageViewModel: ViewModel() {
     fun sendMessage(receiver: String?, message: String, type: String) {
         viewModelScope.launch {
             val status= DatabaseService.addNewMessage(receiver, message, type)
+            NotificationService.pushNotification(SharedPref.get(Constants.PARTICIPANT_TOKEN)!!,SharedPref.get(Constants.CURRENT_USER_USERNAME)!!,"sent image")
             _addingMewImageMessageStatus.value = status
         }
     }
@@ -48,6 +57,25 @@ class PreviewImageViewModel: ViewModel() {
             val status = DatabaseService.addnewGrpMessage(groupId,message,type)
             _addingMewGrpImageMessageStatus.value = status
         }
+    }
+
+    fun sendNotification() {
+        viewModelScope.launch {
+            NotificationService.pushNotification(SharedPref.get(Constants.PARTICIPANT_TOKEN)!!,SharedPref.get(Constants.CURRENT_USER_USERNAME)!!,"sent image")
+        }
+    }
+
+    fun sendGrpNotification(grpUsers: MutableList<UserIDToken>) {
+        viewModelScope.launch {
+            for(i in grpUsers){
+                Log.d("grp",i.toString())
+                if(i.uid != FirebaseAuth.getInstance().currentUser!!.uid){
+                    NotificationService.pushNotification(i.token,SharedPref.get(Constants.GROUP_NAME)!!,"sent image")
+
+                }
+            }
+        }
+
 
     }
 }

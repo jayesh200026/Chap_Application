@@ -7,12 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatapp.service.DatabaseService
 import com.example.chatapp.service.model.Chat
 import com.example.chatapp.service.model.User
+import com.example.chatapp.service.model.UserIDToken
 import com.example.chatapp.service.model.UserWithID
 import kotlinx.coroutines.launch
 
 class ChatFragmentviewModel: ViewModel() {
-    val _chatStatus = MutableLiveData<MutableList<UserWithID>>()
-    val chatStatus = _chatStatus as LiveData<MutableList<UserWithID>>
+    val _chatStatus = MutableLiveData<MutableList<UserIDToken>>()
+    val chatStatus = _chatStatus as LiveData<MutableList<UserIDToken>>
 
     val _userdetailStatus = MutableLiveData<MutableList<UserWithID>>()
     val userdetailsStatus = _userdetailStatus as LiveData<MutableList<UserWithID>>
@@ -24,10 +25,5 @@ class ChatFragmentviewModel: ViewModel() {
         }
     }
 
-    fun readuserdetails() {
-        viewModelScope.launch {
-            val list = DatabaseService.readAllUsers()
-            _userdetailStatus.value = list
-        }
-    }
+
 }

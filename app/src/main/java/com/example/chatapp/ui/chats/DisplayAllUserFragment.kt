@@ -47,13 +47,14 @@ class DisplayAllUserFragment : Fragment() {
             override fun onItemClick(position: Int) {
                 SharedPref.addString(
                     Constants.COLUMN_PARTICIPANTS,
-                    displayAllUserVM.userList[position].userId
+                    displayAllUserVM.userList[position].uid
                 )
-                SharedPref.addString(Constants.COLUMN_URI, displayAllUserVM.userList[position].uri)
+                SharedPref.addString(Constants.COLUMN_URI, displayAllUserVM.userList[position].image)
                 SharedPref.addString(
                     Constants.COLUMN_NAME,
-                    displayAllUserVM.userList[position].userName
+                    displayAllUserVM.userList[position].name
                 )
+                SharedPref.addString(Constants.PARTICIPANT_TOKEN,displayAllUserVM.userList[position].token)
                 requireActivity().supportFragmentManager.beginTransaction()
                     .add(R.id.flFragment, IndividualChatFragment())
                     .addToBackStack(null)

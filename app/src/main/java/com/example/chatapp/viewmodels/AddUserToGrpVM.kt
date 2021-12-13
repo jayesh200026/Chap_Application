@@ -6,12 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatapp.service.DatabaseService
 import com.example.chatapp.service.FirestoreDatabase
+import com.example.chatapp.service.model.UserIDToken
 import com.example.chatapp.service.model.UserWithID
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class AddUserToGrpVM: ViewModel() {
-    val userList = ArrayList<UserWithID>()
+    val userList = ArrayList<UserIDToken>()
 
     private val _getUserListStatus = MutableLiveData<Boolean>()
     val getUserListStatus = _getUserListStatus as LiveData<Boolean>
@@ -20,7 +21,7 @@ class AddUserToGrpVM: ViewModel() {
         viewModelScope.launch {
             FirestoreDatabase.getAllUsersFromDb().collect {
                 userList.clear()
-                userList.addAll(it as ArrayList<UserWithID>)
+                userList.addAll(it as ArrayList<UserIDToken>)
                 _getUserListStatus.postValue(true)
             }
         }

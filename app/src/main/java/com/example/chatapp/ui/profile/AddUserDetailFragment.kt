@@ -20,6 +20,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
 import com.example.chatapp.service.model.User
+import com.example.chatapp.util.Constants
+import com.example.chatapp.util.SharedPref
 import com.example.chatapp.viewmodels.AddUserDetailViewModel
 import com.example.chatapp.viewmodels.AddUserDetailViewModelFactory
 import com.example.chatapp.viewmodels.SharedViewModel
@@ -80,8 +82,9 @@ class AddUserDetailFragment : Fragment() {
             } else if (userName.text.toString().isNotEmpty() && userStatus.text.toString()
                     .isNotEmpty()
             ) {
+                val token = SharedPref.get(Constants.DEVICE_TOKEN)
                 val user = User(userName.text.toString(), userStatus.text.toString(), "")
-                addUserDetailViewModel.addUserDetails(user)
+                addUserDetailViewModel.addUserDetails(user,token)
             }
         }
         observe()
@@ -102,7 +105,7 @@ class AddUserDetailFragment : Fragment() {
                 Log.d("uri", uri.toString())
                 val user =
                     User(userName.text.toString(), userStatus.text.toString(), uri.toString())
-                addUserDetailViewModel.addUserDetails(user)
+                addUserDetailViewModel.addUserDetails(user,SharedPref.get(Constants.DEVICE_TOKEN))
             }
         }
     }

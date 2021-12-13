@@ -1,6 +1,7 @@
 package com.example.chatapp.ui.chats
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
 import com.example.chatapp.util.Constants
+import com.example.chatapp.util.GroupParticipants
 import com.example.chatapp.util.ImageUri
 import com.example.chatapp.util.SharedPref
 import com.example.chatapp.viewmodels.PreviewImageViewModel
@@ -33,6 +35,9 @@ class PreviewImageFragment : Fragment() {
         send = view.findViewById(R.id.chatsendBtn)
         progresBar = view.findViewById(R.id.previemPB)
         val imageUri = arguments?.getSerializable(Constants.SENDING_IMAGE_URI) as ImageUri
+        val grpUsers = arguments?.getSerializable(Constants.PARTICIPANT_LIST) as GroupParticipants
+        Log.d("req",grpUsers.list.size.toString())
+        Log.d("req",grpUsers.list.toString())
         val participant = arguments?.getString(Constants.COLUMN_PARTICIPANTS)
         val isSingle = arguments?.getString("IS_SINGLE")
         previewImageViewModel = ViewModelProvider(
@@ -65,6 +70,7 @@ class PreviewImageFragment : Fragment() {
         }
         previewImageViewModel.addingMewImageMessageStatus.observe(viewLifecycleOwner) {
             if (it) {
+                //previewImageViewModel.sendNotification()
                 progresBar.isVisible = false
                 requireActivity().supportFragmentManager.popBackStack()
             }
@@ -80,10 +86,12 @@ class PreviewImageFragment : Fragment() {
         }
         previewImageViewModel.addingMewGrpImageMessageStatus.observe(viewLifecycleOwner) {
             if (it) {
+                previewImageViewModel.sendGrpNotification(grpUsers.list)
                 progresBar.isVisible = false
                 requireActivity().supportFragmentManager.popBackStack()
             }
         }
+
 
 
 

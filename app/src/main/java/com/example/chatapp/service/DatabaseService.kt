@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 
 object DatabaseService {
-    suspend fun addUser(user: User): Boolean {
+    suspend fun addUser(user: User,token: String?): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                val firestoreStatus = FirestoreDatabase.addUserDetails(user)
+                val firestoreStatus = FirestoreDatabase.addUserDetails(user,token)
                 firestoreStatus
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -55,34 +55,22 @@ object DatabaseService {
         }
     }
 
-    suspend fun readChats(): MutableList<UserWithID>{
+    suspend fun readChats(): MutableList<UserIDToken>{
         return withContext(Dispatchers.IO){
-            val friends = mutableListOf<UserWithID>()
+            val friends = mutableListOf<UserIDToken>()
             val list = FirestoreDatabase.readChats()
             val allUsers = FirestoreDatabase.readAllUsers()
             for(i in allUsers){
-                for(j in list){
-                    if(i.userId == j.uid){
-                        val chatUser = UserWithID(i.userId,i.userName,j.message,i.uri)
-                        friends.add(chatUser)
-                    }
+                if(i.uid in list){
+                    val chatUser = UserIDToken(i.uid,i.name,i.status,i.image,i.token)
+                    friends.add(chatUser)
                 }
             }
             friends
         }
     }
 
-    suspend fun readAllUsers():MutableList<UserWithID> {
-        return withContext(Dispatchers.IO){
-            try {
-               val userList = FirestoreDatabase.readAllUsers()
-                userList
-            }catch (e: Exception){
-                e.printStackTrace()
-               mutableListOf<UserWithID>()
-            }
-        }
-    }
+
 
    suspend fun getAllChats(participant: String?):MutableList<AllMessages> {
         return withContext(Dispatchers.IO){
@@ -142,9 +130,7 @@ object DatabaseService {
         }
     }
 
-    fun getUserListFromDb(): Flow<ArrayList<UserWithID>?> {
-        return FirestoreDatabase.getAllUsersFromDb()
-    }
+
 
     suspend fun createGrp(name: String,list: ArrayList<String>?): Boolean {
         return withContext(Dispatchers.IO){
@@ -169,6 +155,40 @@ object DatabaseService {
                 null
             }
         }
+    }
+
+    suspend fun getParticipantDetails(participantId: String?): User? {
+            return  withContext(Dispatchers.IO){
+                try {
+                    FirestoreDatabase.getParticipantDetails(participantId)
+                }catch (e: Exception){
+                    e.printStackTrace()
+                    null
+                }
+            }
+    }
+
+    suspend fun updateDeviceToken(token: String?): Boolean{
+        return withContext(Dispatchers.IO) {
+           val user = FirestoreDatabase.getUserdetails()
+            FirestoreDatabase.updateDeviceToken(token,user)
+        }
+    }
+
+    suspend fun getGrpParticipantsDetails(groupId: String?):MutableList<UserIDToken> {
+        return withContext(Dispatchers.IO){
+            val list = mutableListOf<UserIDToken>()
+            val participantList = FirestoreDatabase.getGrpParticipantDetails(groupId)
+            val allUsers = FirestoreDatabase.getAllUsers()
+            for(i in allUsers){
+                if(i.uid in participantList){
+                    list.add(UserIDToken(i.uid,i.name,i.status,i.image,i.token))
+                }
+            }
+            Log.d("size",list.size.toString())
+            list
+        }
+
     }
 
 }

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
 import com.example.chatapp.service.model.Chat
+import com.example.chatapp.service.model.UserIDToken
 import com.example.chatapp.service.model.UserWithID
 import com.example.chatapp.ui.OnItemClickListener
 import com.mikhaellopez.circularimageview.CircularImageView
@@ -23,12 +24,12 @@ class ChatViewHolder(view: View,val context: Context,listener: OnItemClickListen
         }
     }
 
-    fun bind(item: UserWithID){
-        name.text = item.userName
+    fun bind(item: UserIDToken){
+        name.text = item.name
         lastMessage.text = item.status
-        if(item.uri != ""){
+        if(item.image != ""){
             Glide.with(context)
-                .load(item.uri)
+                .load(item.image)
                 .centerInside()
                 .into(pic)
         }

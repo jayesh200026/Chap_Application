@@ -40,9 +40,9 @@ class EditProfileViewModel: ViewModel() {
         }
     }
 
-    fun addUserDetails(user: User) {
+    fun addUserDetails(user: User,token: String?) {
         viewModelScope.launch {
-            val firestoreStatus = DatabaseService.addUser(user)
+            val firestoreStatus = DatabaseService.addUser(user,token)
             Log.d("addUser",""+firestoreStatus)
             _addUserDetailsStatus.value = firestoreStatus
         }
