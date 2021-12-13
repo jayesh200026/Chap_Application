@@ -2,6 +2,7 @@ package com.example.chatapp.viewmodels
 
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,10 @@ import com.example.chatapp.service.DatabaseService
 import com.example.chatapp.service.FirestoreDatabase
 import com.example.chatapp.service.model.AllMessages
 import com.example.chatapp.service.model.Chats
+import com.example.chatapp.service.model.NotificationService
+import com.example.chatapp.service.model.User
+import com.example.chatapp.util.Constants
+import com.example.chatapp.util.SharedPref
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -26,6 +31,12 @@ class IndividualChatViewModel : ViewModel() {
     val _uploadMessageImageStatus = MutableLiveData<Uri?>()
     val uploadMessageImageStatus = _uploadMessageImageStatus as LiveData<Uri?>
 
+    val _sendMessageStatus = MutableLiveData<Boolean>()
+    val sendMessageStatus = _sendMessageStatus as LiveData<Boolean>
+
+    val _currentUserStatus = MutableLiveData<User>()
+    val currentUserStatus = _currentUserStatus as LiveData<User>
+
     fun getAllChats(participant: String?) {
         viewModelScope.launch {
             val list = DatabaseService.getAllChats(participant)
@@ -35,7 +46,8 @@ class IndividualChatViewModel : ViewModel() {
 
     fun sendMessage(receiver: String?, message: String, type: String) {
         viewModelScope.launch {
-            DatabaseService.addNewMessage(receiver, message, type)
+            val status = DatabaseService.addNewMessage(receiver, message, type)
+            _sendMessageStatus.value = status
         }
     }
 
@@ -54,10 +66,27 @@ class IndividualChatViewModel : ViewModel() {
         }
     }
 
-    fun loadNextTenChats(offset: String, participant: String?) {
+    fun loadNextTenChats(offset: Long, participant: String?) {
         viewModelScope.launch {
             val list = FirestoreDatabase.loadNextChats(participant, offset)
             _nextchatsStatus.value = list
+        }
+    }
+
+    fun getCurrentUser() {
+        viewModelScope.launch {
+            val user = FirestoreDatabase.getUserdetails()
+            _currentUserStatus.value = user
+        }
+    }
+
+    fun sendPushNotification(token: String?, userName: String, textMessage: String) {
+        viewModelScope.launch {
+            if(textMessage == ""){
+                NotificationService.pushNotification(token, userName, "Sent image")
+            }else {
+                NotificationService.pushNotification(token, userName, textMessage)
+            }
         }
     }
 }

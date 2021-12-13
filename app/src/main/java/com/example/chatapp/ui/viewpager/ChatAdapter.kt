@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
+import com.example.chatapp.service.model.UserIDToken
 import com.example.chatapp.service.model.UserWithID
 import com.example.chatapp.ui.OnItemClickListener
 
-class ChatAdapter(val context: Context, val list: MutableList<UserWithID>) :
+class ChatAdapter(val context: Context, val list: MutableList<UserIDToken>) :
     RecyclerView.Adapter<ChatViewHolder>() {
     private lateinit var mListner: OnItemClickListener
 

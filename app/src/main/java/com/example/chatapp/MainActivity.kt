@@ -91,6 +91,12 @@ class MainActivity : AppCompatActivity() {
                 gotoGroupChatPage()
             }
         })
+        sharedViewModel.deviceTokenStatus.observe(this,{
+            if(it){
+                FirebaseAuth.getInstance().signOut()
+                sharedViewModel.setGotoRequestOtpStatus(true)
+            }
+        })
     }
 
     private fun gotoGroupChatPage() {
@@ -152,8 +158,7 @@ class MainActivity : AppCompatActivity() {
                 sharedViewModel.setGotoEditProfilePage(true)
             }
             R.id.logoutMenu -> {
-                FirebaseAuth.getInstance().signOut()
-                sharedViewModel.setGotoRequestOtpStatus(true)
+                sharedViewModel.updateDeviceToken("")
             }
         }
         return true

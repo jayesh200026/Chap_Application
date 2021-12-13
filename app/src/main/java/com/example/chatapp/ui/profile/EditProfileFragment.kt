@@ -21,6 +21,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
 import com.example.chatapp.service.model.User
+import com.example.chatapp.util.Constants
+import com.example.chatapp.util.SharedPref
 import com.example.chatapp.viewmodels.EditProfileViewModel
 import com.example.chatapp.viewmodels.EditProfileViewModelFactory
 import com.example.chatapp.viewmodels.SharedViewModel
@@ -92,7 +94,7 @@ class EditProfileFragment : Fragment() {
         saveBtn.setOnClickListener {
             if (username.text.toString().isNotEmpty() && status.text.toString().isNotEmpty()) {
                 val user = User(username.text.toString(), status.text.toString(), uri.toString())
-                editProfileViewModel.addUserDetails(user)
+                editProfileViewModel.addUserDetails(user,SharedPref.get(Constants.DEVICE_TOKEN))
             }
         }
         observe()

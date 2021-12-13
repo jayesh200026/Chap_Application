@@ -8,16 +8,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
 import com.example.chatapp.service.model.Chats
+import com.example.chatapp.service.model.User
+import com.example.chatapp.service.model.UserWithID
+import com.example.chatapp.service.model.UserWithToken
 import com.example.chatapp.ui.chats.PreviewImageFragment
 import com.example.chatapp.util.Constants
 import com.example.chatapp.util.ImageUri
@@ -29,7 +29,7 @@ import com.example.chatapp.viewmodels.SharedViewModelFactory
 import com.mikhaellopez.circularimageview.CircularImageView
 
 
-class IndividualChatFragment : Fragment() {
+class IndividualChatFragment : Fragment(), View.OnClickListener {
     lateinit var individualChatViewModel: IndividualChatViewModel
     lateinit var sharedViewModel: SharedViewModel
     lateinit var recyclerView: RecyclerView
@@ -40,13 +40,15 @@ class IndividualChatFragment : Fragment() {
     lateinit var sendBtn: ImageButton
     lateinit var chatMessage: EditText
     lateinit var getImage: ImageView
+    lateinit var currentUser: User
     var list = mutableListOf<Chats>()
     var currentItem: Int = 0
     var totalCount: Int = 0
     var scrolledOutItems: Int = 0
-    var offset = ""
-    var previousOffset = ""
+    var offset:Long = Long.MAX_VALUE
+
     var isLoading: Boolean = false
+    var textMessage = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,6 +67,9 @@ class IndividualChatFragment : Fragment() {
         recyclerView = view.findViewById(R.id.rvIndlChat)
         username = view.findViewById(R.id.participantName)
         profilePic = view.findViewById(R.id.chatProfilePic)
+        individualChatViewModel.getCurrentUser()
+        profilePic.setOnClickListener(this)
+        username.setOnClickListener(this)
         backBtn = view.findViewById(R.id.chatBackBtn)
         chatMessage = view.findViewById(R.id.chatET)
         sendBtn = view.findViewById(R.id.chatsendBtn)
@@ -85,6 +90,7 @@ class IndividualChatFragment : Fragment() {
             val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
             val message = chatMessage.text.toString()
             if (message.isNotEmpty()) {
+                textMessage = message
                 individualChatViewModel.sendMessage(
                     participant,
                     message,
@@ -124,8 +130,7 @@ class IndividualChatFragment : Fragment() {
     private fun recycleViewScrollListener() {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                Log.d("pagination",offset+"    "+previousOffset)
-                //super.onScrolled(recyclerView, dx, dy)
+                super.onScrolled(recyclerView, dx, dy)
                 currentItem = (recyclerView.layoutManager as LinearLayoutManager).childCount
                 totalCount = (recyclerView.layoutManager as LinearLayoutManager).itemCount
                 scrolledOutItems = (recyclerView.layoutManager as LinearLayoutManager)
@@ -133,7 +138,7 @@ class IndividualChatFragment : Fragment() {
                 if (!isLoading) {
                     if ((currentItem + scrolledOutItems) == totalCount && scrolledOutItems >= 0) {
                         isLoading = true
-                        if (previousOffset != offset) {
+                        if (offset != 0L) {
                             Log.d("pagination", "scrolled")
                             loadNextTenChats()
                         }
@@ -159,12 +164,14 @@ class IndividualChatFragment : Fragment() {
                 Log.d("pagination", "${it.messageType}")
                 list.add(0, it)
                 adapter.notifyItemInserted(0)
+                //adapter.setData(list)
                 recyclerView.scrollToPosition(0)
             }
-            offset = list[list.size - 1].messageId
+            offset = list[list.size - 1].sentTime
         }
         individualChatViewModel.uploadMessageImageStatus.observe(viewLifecycleOwner) {
             if (it != null) {
+                textMessage = ""
                 val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
                 individualChatViewModel.sendMessage(
                     participant,
@@ -176,26 +183,32 @@ class IndividualChatFragment : Fragment() {
         individualChatViewModel.nextchatsStatus.observe(viewLifecycleOwner) {
             isLoading = false
             Log.d("pagination", it.size.toString())
-            previousOffset = offset
             if (it.size != 0) {
                 for (i in it) {
                     Log.d("pagination",i.toString())
-                    offset = i.messageId
+                    offset = i.sentTime
                     list.add(i)
                     adapter.notifyItemInserted(list.size - 1)
                 }
+                //adapter.setData(list)
             }
             else{
-                offset = ""
+                offset = 0L
                 //previousOffset = ""
             }
         }
+        individualChatViewModel.sendMessageStatus.observe(viewLifecycleOwner){
+            if(it){
+                val token = SharedPref.get(Constants.PARTICIPANT_TOKEN)
+                individualChatViewModel.sendPushNotification(token,currentUser.userName,textMessage)
+            }
+        }
+        individualChatViewModel.currentUserStatus.observe(viewLifecycleOwner){
+            currentUser = it
+            SharedPref.addString(Constants.CURRENT_USER_USERNAME,it.userName)
+        }
     }
 
-    private fun getAllChatsBetweenTwoUsers() {
-        val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
-        individualChatViewModel.getAllChats(participant)
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Log.d("image", "Inside onActivityresult")
@@ -215,6 +228,21 @@ class IndividualChatFragment : Fragment() {
                 .add(R.id.flFragment, fragment)
                 .addToBackStack(null)
                 .commit()
+        }
+    }
+
+    override fun onClick(view: View?) {
+        when(view?.id){
+            R.id.chatProfilePic,R.id.participantName ->{
+                val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
+                val bundle = Bundle()
+                bundle.putString(Constants.COLUMN_PARTICIPANTS,participant)
+                val participantPreviewFragment = ParticipantDetailsFragment()
+                participantPreviewFragment.arguments = bundle
+                requireActivity().supportFragmentManager.beginTransaction().add(R.id.flFragment,participantPreviewFragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
         }
     }
 }

@@ -8,7 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatapp.service.DatabaseService
 import com.example.chatapp.service.FirestoreDatabase
 import com.example.chatapp.service.model.GroupChat
+import com.example.chatapp.service.model.NotificationService
+import com.example.chatapp.service.model.UserIDToken
 import com.example.chatapp.service.model.UserWithID
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -21,6 +24,15 @@ class GroupChatViewModel: ViewModel() {
     val _uploadMessageImageStatus = MutableLiveData<Uri?>()
     val uploadMessageImageStatus = _uploadMessageImageStatus as LiveData<Uri?>
 
+    val _nextTenMessagesStatus = MutableLiveData<MutableList<GroupChat>>()
+    val nextTenMessagesStatus = _nextTenMessagesStatus as LiveData<MutableList<GroupChat>>
+
+    val _sendNewMessageStatus = MutableLiveData<Boolean>()
+    val sendNewMessageStatus = _sendNewMessageStatus as LiveData<Boolean>
+
+    val _participantsDetails = MutableLiveData<MutableList<UserIDToken>>()
+    val participantsDetails = _participantsDetails as LiveData<MutableList<UserIDToken>>
+
     fun getAllChats(groupId: String?) {
         viewModelScope.launch {
             FirestoreDatabase.subscribeToGroup(groupId).collect {
@@ -32,7 +44,8 @@ class GroupChatViewModel: ViewModel() {
 
     fun sendMessage(groupId: String?, message: String,type: String) {
         viewModelScope.launch {
-            DatabaseService.addnewGrpMessage(groupId,message,type)
+            val status = DatabaseService.addnewGrpMessage(groupId,message,type)
+            _sendNewMessageStatus.value = status
         }
 
     }
@@ -51,5 +64,31 @@ class GroupChatViewModel: ViewModel() {
             val uri = DatabaseService.uploadMessageImage(selectedImagePath)
             _uploadMessageImageStatus.value = uri
         }
+    }
+
+    fun loadNextTenGrpChats(groupId: String?, offset: Long) {
+        viewModelScope.launch {
+            val list = FirestoreDatabase.loadNextGroupChats(groupId,offset)
+            _nextTenMessagesStatus.value = list
+        }
+
+    }
+
+    fun getParticipantsDetails(groupId: String?) {
+        viewModelScope.launch {
+            val list = DatabaseService.getGrpParticipantsDetails(groupId)
+            _participantsDetails.value = list
+        }
+
+    }
+
+    fun sendPushNotification(groupName: String, participantList: MutableList<UserIDToken>, textMessage: String) {
+            viewModelScope.launch {
+                val uid = FirebaseAuth.getInstance().currentUser?.uid
+                for(i in participantList){
+                    if(i.uid != uid!!)
+                    NotificationService.pushNotification(i.token,groupName,textMessage)
+                }
+            }
     }
 }
