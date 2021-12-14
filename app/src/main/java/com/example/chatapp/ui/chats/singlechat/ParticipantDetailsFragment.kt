@@ -41,11 +41,11 @@ class ParticipantDetailsFragment : Fragment() {
             requireActivity().supportFragmentManager.popBackStack()
         }
         participantDetailVm.getParticipantDetails(participantId)
-        participantDetailVm.getParticipantDetailsStatus.observe(viewLifecycleOwner){
-            if(it != null){
+        participantDetailVm.getParticipantDetailsStatus.observe(viewLifecycleOwner) {
+            if (it != null) {
                 name.text = it.userName
                 status.text = it.status
-                if(it.uri != ""){
+                if (it.uri != "") {
                     Glide.with(requireContext())
                         .load(it.uri)
                         .centerInside()
@@ -55,5 +55,4 @@ class ParticipantDetailsFragment : Fragment() {
         }
         return view
     }
-
 }

@@ -22,7 +22,6 @@ class GroupChatUserAdapter(
     var selectedUser = mutableListOf<String>()
 
     class GroupChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupChatUserViewHolder {
@@ -31,7 +30,6 @@ class GroupChatUserAdapter(
             parent, false
         )
         return GroupChatUserViewHolder(itemView)
-
     }
 
     override fun onBindViewHolder(holder: GroupChatUserViewHolder, position: Int) {

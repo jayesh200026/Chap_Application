@@ -91,8 +91,8 @@ class MainActivity : AppCompatActivity() {
                 gotoGroupChatPage()
             }
         })
-        sharedViewModel.deviceTokenStatus.observe(this,{
-            if(it){
+        sharedViewModel.deviceTokenStatus.observe(this, {
+            if (it) {
                 FirebaseAuth.getInstance().signOut()
                 sharedViewModel.setGotoRequestOtpStatus(true)
             }

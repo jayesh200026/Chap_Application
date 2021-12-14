@@ -14,12 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
-import com.example.chatapp.service.model.Chats
-import com.example.chatapp.service.model.User
-import com.example.chatapp.service.model.UserWithID
-import com.example.chatapp.service.model.UserWithToken
+import com.example.chatapp.service.model.*
 import com.example.chatapp.ui.chats.PreviewImageFragment
 import com.example.chatapp.util.Constants
+import com.example.chatapp.util.GroupParticipants
 import com.example.chatapp.util.ImageUri
 import com.example.chatapp.util.SharedPref
 import com.example.chatapp.viewmodels.IndividualChatViewModel
@@ -45,8 +43,7 @@ class IndividualChatFragment : Fragment(), View.OnClickListener {
     var currentItem: Int = 0
     var totalCount: Int = 0
     var scrolledOutItems: Int = 0
-    var offset:Long = Long.MAX_VALUE
-
+    var offset: Long = Long.MAX_VALUE
     var isLoading: Boolean = false
     var textMessage = ""
 
@@ -55,7 +52,6 @@ class IndividualChatFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_individual_chat, container, false)
-        //(requireActivity() as AppCompatActivity).supportActionBar?.hide()
         individualChatViewModel = ViewModelProvider(
             this,
             IndividualChatviewModelFactory()
@@ -84,7 +80,6 @@ class IndividualChatFragment : Fragment(), View.OnClickListener {
                 Intent.createChooser(intent, "Select Image"),
                 Constants.RC_SELECT_IMAGE
             )
-
         }
         sendBtn.setOnClickListener {
             val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
@@ -115,14 +110,12 @@ class IndividualChatFragment : Fragment(), View.OnClickListener {
             }
         }
         val layoutMangaer = LinearLayoutManager(requireContext())
-        //layoutMangaer.stackFromEnd=  true
         layoutMangaer.reverseLayout = true
         recyclerView.layoutManager = layoutMangaer
         adapter = IndvlChatAdapter(list)
         recyclerView.adapter = adapter
         subscribeToListener()
         recycleViewScrollListener()
-        //loadNextTenChats()
         observe()
         return view
     }
@@ -164,7 +157,6 @@ class IndividualChatFragment : Fragment(), View.OnClickListener {
                 Log.d("pagination", "${it.messageType}")
                 list.add(0, it)
                 adapter.notifyItemInserted(0)
-                //adapter.setData(list)
                 recyclerView.scrollToPosition(0)
             }
             offset = list[list.size - 1].sentTime
@@ -185,27 +177,28 @@ class IndividualChatFragment : Fragment(), View.OnClickListener {
             Log.d("pagination", it.size.toString())
             if (it.size != 0) {
                 for (i in it) {
-                    Log.d("pagination",i.toString())
+                    Log.d("pagination", i.toString())
                     offset = i.sentTime
                     list.add(i)
                     adapter.notifyItemInserted(list.size - 1)
                 }
-                //adapter.setData(list)
-            }
-            else{
+            } else {
                 offset = 0L
-                //previousOffset = ""
             }
         }
-        individualChatViewModel.sendMessageStatus.observe(viewLifecycleOwner){
-            if(it){
+        individualChatViewModel.sendMessageStatus.observe(viewLifecycleOwner) {
+            if (it) {
                 val token = SharedPref.get(Constants.PARTICIPANT_TOKEN)
-                individualChatViewModel.sendPushNotification(token,currentUser.userName,textMessage)
+                individualChatViewModel.sendPushNotification(
+                    token,
+                    currentUser.userName,
+                    textMessage
+                )
             }
         }
-        individualChatViewModel.currentUserStatus.observe(viewLifecycleOwner){
+        individualChatViewModel.currentUserStatus.observe(viewLifecycleOwner) {
             currentUser = it
-            SharedPref.addString(Constants.CURRENT_USER_USERNAME,it.userName)
+            SharedPref.addString(Constants.CURRENT_USER_USERNAME, it.userName)
         }
     }
 
@@ -219,9 +212,12 @@ class IndividualChatFragment : Fragment(), View.OnClickListener {
             val selectedImagePath = data.data
             val imageUri = ImageUri(selectedImagePath)
             val bundle = Bundle()
+            //val list = mutableListOf<UserIDToken>()
+            val grpUsers = GroupParticipants(null)
+            bundle.putSerializable(Constants.PARTICIPANT_LIST, grpUsers)
             bundle.putSerializable(Constants.SENDING_IMAGE_URI, imageUri)
             bundle.putString(Constants.COLUMN_PARTICIPANTS, participant)
-            bundle.putString("IS_SINGLE","true")
+            bundle.putString("IS_SINGLE", "true")
             val fragment = PreviewImageFragment()
             fragment.arguments = bundle
             requireActivity().supportFragmentManager.beginTransaction()
@@ -232,14 +228,16 @@ class IndividualChatFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(view: View?) {
-        when(view?.id){
-            R.id.chatProfilePic,R.id.participantName ->{
+        when (view?.id) {
+            R.id.chatProfilePic, R.id.participantName -> {
                 val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
                 val bundle = Bundle()
-                bundle.putString(Constants.COLUMN_PARTICIPANTS,participant)
+
+                bundle.putString(Constants.COLUMN_PARTICIPANTS, participant)
                 val participantPreviewFragment = ParticipantDetailsFragment()
                 participantPreviewFragment.arguments = bundle
-                requireActivity().supportFragmentManager.beginTransaction().add(R.id.flFragment,participantPreviewFragment)
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .add(R.id.flFragment, participantPreviewFragment)
                     .addToBackStack(null)
                     .commit()
             }

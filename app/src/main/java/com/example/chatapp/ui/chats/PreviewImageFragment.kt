@@ -12,6 +12,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
+import com.example.chatapp.service.model.UserIDToken
 import com.example.chatapp.util.Constants
 import com.example.chatapp.util.GroupParticipants
 import com.example.chatapp.util.ImageUri
@@ -25,6 +26,7 @@ class PreviewImageFragment : Fragment() {
     lateinit var send: FloatingActionButton
     lateinit var previewImageViewModel: PreviewImageViewModel
     lateinit var progresBar: ProgressBar
+    //var grpUsers:GroupParticipants? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,9 +37,16 @@ class PreviewImageFragment : Fragment() {
         send = view.findViewById(R.id.chatsendBtn)
         progresBar = view.findViewById(R.id.previemPB)
         val imageUri = arguments?.getSerializable(Constants.SENDING_IMAGE_URI) as ImageUri
-        val grpUsers = arguments?.getSerializable(Constants.PARTICIPANT_LIST) as GroupParticipants
-        Log.d("req",grpUsers.list.size.toString())
-        Log.d("req",grpUsers.list.toString())
+         val grpUsers = arguments?.getSerializable(Constants.PARTICIPANT_LIST) as GroupParticipants
+
+        val list = mutableListOf<UserIDToken>()
+        if( grpUsers.list != null) {
+            for (i in grpUsers.list) {
+                Log.d("user", i.toString())
+                list.add(i)
+            }
+        }
+        Log.d("list", list.toString())
         val participant = arguments?.getString(Constants.COLUMN_PARTICIPANTS)
         val isSingle = arguments?.getString("IS_SINGLE")
         previewImageViewModel = ViewModelProvider(
@@ -70,7 +79,6 @@ class PreviewImageFragment : Fragment() {
         }
         previewImageViewModel.addingMewImageMessageStatus.observe(viewLifecycleOwner) {
             if (it) {
-                //previewImageViewModel.sendNotification()
                 progresBar.isVisible = false
                 requireActivity().supportFragmentManager.popBackStack()
             }
@@ -80,27 +88,18 @@ class PreviewImageFragment : Fragment() {
                 previewImageViewModel.sendGrpMessage(
                     participant,
                     it.toString(),
-                    Constants.MESSAGE_TYPE_IMAGE
+                    Constants.MESSAGE_TYPE_IMAGE, list
                 )
             }
         }
         previewImageViewModel.addingMewGrpImageMessageStatus.observe(viewLifecycleOwner) {
             if (it) {
-                previewImageViewModel.sendGrpNotification(grpUsers.list)
+                //previewImageViewModel.sendGrpNotification(list)
                 progresBar.isVisible = false
                 requireActivity().supportFragmentManager.popBackStack()
             }
         }
-
-
-
-
         return view
     }
-
-    private fun sendImageToGrp() {
-        TODO("Not yet implemented")
-    }
-
 
 }

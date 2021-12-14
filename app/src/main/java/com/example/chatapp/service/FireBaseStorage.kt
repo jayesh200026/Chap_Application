@@ -42,8 +42,7 @@ object FireBaseStorage {
         }
     }
 
-    suspend fun uploadMessageimages(selectedImagePath: Uri?,time: String): Uri {
-
+    suspend fun uploadMessageimages(selectedImagePath: Uri?, time: String): Uri {
         return suspendCoroutine { cont ->
             val uid = FirebaseAuth.getInstance().currentUser?.uid
 
@@ -63,5 +62,4 @@ object FireBaseStorage {
             }
         }
     }
-
 }

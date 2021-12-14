@@ -16,5 +16,6 @@ object SharedPref {
         editor.putString(key, value)
         editor.apply()
     }
+
     fun get(key: String): String? = sharedPreferences.getString(key, "")
 }

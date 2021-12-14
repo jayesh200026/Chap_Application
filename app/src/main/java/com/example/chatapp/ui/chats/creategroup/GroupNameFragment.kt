@@ -31,10 +31,10 @@ class GroupNameFragment : Fragment() {
             ViewModelProvider(this, GroupNameViewModelFactory())[GroupNameViewModel::class.java]
         val selectedList = arguments?.getStringArrayList(Constants.COLUMN_PARTICIPANTS)
         grpName = view.findViewById(R.id.grpNameET)
-       saveGrpfab = view.findViewById(R.id.saveGrpFAB)
+        saveGrpfab = view.findViewById(R.id.saveGrpFAB)
         saveGrpfab.setOnClickListener {
-            if(grpName.text.isNotEmpty() && selectedList != null){
-                grpNameVM.createGrp(grpName.text.toString(),selectedList)
+            if (grpName.text.isNotEmpty() && selectedList != null) {
+                grpNameVM.createGrp(grpName.text.toString(), selectedList)
 
             }
         }
@@ -43,16 +43,14 @@ class GroupNameFragment : Fragment() {
     }
 
     private fun observe() {
-        grpNameVM.grpCreatedStatus.observe(viewLifecycleOwner){
-            if(it){
+        grpNameVM.grpCreatedStatus.observe(viewLifecycleOwner) {
+            if (it) {
                 activity?.run {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.flFragment,HomeFragment())
+                        .replace(R.id.flFragment, HomeFragment())
                         .commit()
                 }
             }
         }
     }
-
-
 }
