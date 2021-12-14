@@ -63,12 +63,10 @@ class AddUserDetailFragment : Fragment() {
             ActivityResultCallback {
                 if (it != null) {
                     uri = it
-                    //profile.setImageURI(it)
                     Glide.with(requireContext())
                         .load(it)
                         .centerInside()
                         .into(profile)
-                    //addUserDetailViewModel.addProfilePic(it)
                 }
             }
         )
@@ -84,7 +82,7 @@ class AddUserDetailFragment : Fragment() {
             ) {
                 val token = SharedPref.get(Constants.DEVICE_TOKEN)
                 val user = User(userName.text.toString(), userStatus.text.toString(), "")
-                addUserDetailViewModel.addUserDetails(user,token)
+                addUserDetailViewModel.addUserDetails(user, token)
             }
         }
         observe()
@@ -105,9 +103,8 @@ class AddUserDetailFragment : Fragment() {
                 Log.d("uri", uri.toString())
                 val user =
                     User(userName.text.toString(), userStatus.text.toString(), uri.toString())
-                addUserDetailViewModel.addUserDetails(user,SharedPref.get(Constants.DEVICE_TOKEN))
+                addUserDetailViewModel.addUserDetails(user, SharedPref.get(Constants.DEVICE_TOKEN))
             }
         }
     }
-
 }

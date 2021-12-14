@@ -13,7 +13,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
-class FirebaseMessaging: FirebaseMessagingService() {
+class FirebaseMessaging : FirebaseMessagingService() {
 
     private val firebaseMessaging = FirebaseMessaging.getInstance()
 
@@ -24,7 +24,7 @@ class FirebaseMessaging: FirebaseMessagingService() {
 
     fun getToken(callback: (String) -> Unit) {
         firebaseMessaging.token.addOnCompleteListener { task ->
-            if(!task.isSuccessful) {
+            if (!task.isSuccessful) {
                 callback("")
             }
             callback(task.result.toString())

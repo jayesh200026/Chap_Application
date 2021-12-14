@@ -45,11 +45,12 @@ class RequestOTPFragment : Fragment() {
         requestOtp = view.findViewById(R.id.requestOtpbtn)
         phoneNumber = view.findViewById(R.id.phoneNumber)
         progressBar = view.findViewById(R.id.progressBar)
-        requestOtp.setOnClickListener{
-            if(phoneNumber.text.toString().trim().isEmpty() ||
-                phoneNumber.text.toString().trim().length != 10 ){
-                Toast.makeText(requireContext(),"Check number", Toast.LENGTH_SHORT).show()
-            }else{
+        requestOtp.setOnClickListener {
+            if (phoneNumber.text.toString().trim().isEmpty() ||
+                phoneNumber.text.toString().trim().length != 10
+            ) {
+                Toast.makeText(requireContext(), "Check number", Toast.LENGTH_SHORT).show()
+            } else {
                 sendOTP()
             }
         }
@@ -68,7 +69,7 @@ class RequestOTPFragment : Fragment() {
             override fun onVerificationFailed(e: FirebaseException) {
                 progressBar.isVisible = false
                 requestOtp.isVisible = true
-                Toast.makeText(requireContext(),"OOps",Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "OOps", Toast.LENGTH_SHORT).show()
             }
 
             override fun onCodeSent(
@@ -78,14 +79,16 @@ class RequestOTPFragment : Fragment() {
                 progressBar.isVisible = false
                 requestOtp.isVisible = true
                 sharedViewModel.setGotoVerifyotpPageStatus(true)
-                SharedPref.addString(Constants.VERIFICATION,verificationId)
+                SharedPref.addString(Constants.VERIFICATION, verificationId)
             }
         }
         val options = PhoneAuthOptions.newBuilder(mAuth)
-            .setPhoneNumber("+91"+phoneNumber.text.toString().trim())       // Phone number to verify
-            .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-            .setActivity(requireActivity())                 // Activity (for callback binding)
-            .setCallbacks(mCallback)          // OnVerificationStateChangedCallbacks
+            .setPhoneNumber(
+                "+91" + phoneNumber.text.toString().trim()
+            )       // Phone number to verify
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(requireActivity())
+            .setCallbacks(mCallback)
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }

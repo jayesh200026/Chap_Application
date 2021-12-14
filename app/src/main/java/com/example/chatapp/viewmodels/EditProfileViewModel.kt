@@ -14,6 +14,9 @@ class EditProfileViewModel: ViewModel() {
     val _profilePhotoStatus = MutableLiveData<Uri?>()
     val profilePhotoStatus = _profilePhotoStatus as LiveData<Uri?>
 
+    val _profilePhotoAddStatus = MutableLiveData<Uri?>()
+    val profilePhotoAddStatus = _profilePhotoAddStatus as LiveData<Uri?>
+
     val _userDetailsStatus = MutableLiveData<User?>()
     val userDetailsStatus = _userDetailsStatus as LiveData<User?>
 
@@ -36,7 +39,8 @@ class EditProfileViewModel: ViewModel() {
 
     fun uploadProfilePic(it: Uri) {
         viewModelScope.launch {
-            DatabaseService.uploadProfilephoto(it)
+           val uri =  DatabaseService.uploadProfilephoto(it)
+            _profilePhotoAddStatus.value = uri
         }
     }
 

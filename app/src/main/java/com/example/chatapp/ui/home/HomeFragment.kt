@@ -46,11 +46,10 @@ class HomeFragment : Fragment() {
 
     private fun initializetabLayout() {
         var fragmentManager = requireActivity().supportFragmentManager
-
         fragmentAdapter = FragmentAdapter(fragmentManager, requireActivity().lifecycle)
         viewPager.adapter = fragmentAdapter
-        tablayout.addTab(tablayout.newTab().setText("CHATS"))
-        tablayout.addTab(tablayout.newTab().setText("GROUPS"))
+        tablayout.addTab(tablayout.newTab().setText(R.string.chat))
+        tablayout.addTab(tablayout.newTab().setText(R.string.group_chat))
         tablayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 if (tab != null) {

@@ -72,7 +72,7 @@ class EditProfileFragment : Fragment() {
             ActivityResultContracts.GetContent(),
             ActivityResultCallback {
                 if (it != null) {
-                    uri = it
+                    //uri = it
                     profilePhoto.setImageURI(it)
                     editProfileViewModel.uploadProfilePic(it)
                 }
@@ -94,7 +94,7 @@ class EditProfileFragment : Fragment() {
         saveBtn.setOnClickListener {
             if (username.text.toString().isNotEmpty() && status.text.toString().isNotEmpty()) {
                 val user = User(username.text.toString(), status.text.toString(), uri.toString())
-                editProfileViewModel.addUserDetails(user,SharedPref.get(Constants.DEVICE_TOKEN))
+                editProfileViewModel.addUserDetails(user, SharedPref.get(Constants.DEVICE_TOKEN))
             }
         }
         observe()
@@ -103,18 +103,15 @@ class EditProfileFragment : Fragment() {
 
 
     private fun observe() {
-        editProfileViewModel.profilePhotoStatus.observe(viewLifecycleOwner) {
+        editProfileViewModel.profilePhotoAddStatus.observe(viewLifecycleOwner) {
             if (it != null) {
                 uri = it
-                Glide.with(requireContext())
-                    .load(it)
-                    .into(profilePhoto)
             }
         }
         editProfileViewModel.userDetailsStatus.observe(viewLifecycleOwner) {
 
             if (it != null) {
-                if(it.uri != ""){
+                if (it.uri != "") {
                     Glide.with(requireContext())
                         .load(it.uri)
                         .centerInside()

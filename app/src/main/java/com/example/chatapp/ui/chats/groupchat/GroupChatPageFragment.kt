@@ -42,7 +42,7 @@ class GroupChatPageFragment : Fragment() {
     lateinit var sendBtn: ImageButton
     lateinit var chatMessage: EditText
     lateinit var imageMsg: ImageView
-    var offset: Long=Long.MAX_VALUE
+    var offset: Long = Long.MAX_VALUE
     val list = mutableListOf<GroupChat>()
     var participantList = mutableListOf<UserIDToken>()
     var groupId = SharedPref.get(Constants.GROUP_ID)
@@ -51,6 +51,7 @@ class GroupChatPageFragment : Fragment() {
     var scrolledOutItems: Int = 0
     var textMessage: String = ""
     var isLoading: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -104,8 +105,7 @@ class GroupChatPageFragment : Fragment() {
         getAllChatsOfGroup(groupId)
         getAllPartipantsDetails(groupId)
         observe()
-        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener(){
-
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 currentItem = (recyclerView.layoutManager as LinearLayoutManager).childCount
@@ -131,7 +131,7 @@ class GroupChatPageFragment : Fragment() {
     }
 
     private fun loadNextTenGrpChats() {
-        groupChatViewModel.loadNextTenGrpChats(groupId,offset)
+        groupChatViewModel.loadNextTenGrpChats(groupId, offset)
     }
 
     private fun observe() {
@@ -142,34 +142,33 @@ class GroupChatPageFragment : Fragment() {
                 adapter.notifyItemInserted(0)
                 recyclerView.scrollToPosition(0)
             }
-            offset = list[list.size-1].sentTime
+            offset = list[list.size - 1].sentTime
         }
         groupChatViewModel.uploadMessageImageStatus.observe(viewLifecycleOwner) {
             if (it != null) {
                 groupChatViewModel.sendMessage(groupId, it.toString(), Constants.MESSAGE_TYPE_IMAGE)
             }
         }
-        groupChatViewModel.nextTenMessagesStatus.observe(viewLifecycleOwner){
+        groupChatViewModel.nextTenMessagesStatus.observe(viewLifecycleOwner) {
             isLoading = false
-            if(it.size != 0){
-                for(i in it){
+            if (it.size != 0) {
+                for (i in it) {
                     list.add(i)
                     offset = i.sentTime
                     adapter.notifyItemInserted(list.size - 1)
                 }
-            }
-            else{
+            } else {
                 offset = 0L
             }
         }
-        groupChatViewModel.participantsDetails.observe(viewLifecycleOwner){
+        groupChatViewModel.participantsDetails.observe(viewLifecycleOwner) {
             participantList.addAll(it)
         }
-        groupChatViewModel.sendNewMessageStatus.observe(viewLifecycleOwner){
+        groupChatViewModel.sendNewMessageStatus.observe(viewLifecycleOwner) {
             val grpName = SharedPref.get(Constants.GROUP_NAME)
-            if(it && grpName != null){
-                Log.d("participant list",participantList.toString())
-                groupChatViewModel.sendPushNotification(grpName,participantList,textMessage)
+            if (it && grpName != null) {
+                Log.d("participant list", participantList.toString())
+                groupChatViewModel.sendPushNotification(grpName, participantList, textMessage)
             }
         }
 
@@ -187,12 +186,12 @@ class GroupChatPageFragment : Fragment() {
             val selectedImagePath = data.data
             val imageUri = ImageUri(selectedImagePath)
             val grpUsers = GroupParticipants(participantList)
-            Log.d("qwe",participantList.size.toString())
+            Log.d("qwe", participantList.size.toString())
             val bundle = Bundle()
             bundle.putSerializable(Constants.SENDING_IMAGE_URI, imageUri)
             bundle.putString(Constants.COLUMN_PARTICIPANTS, participant)
-            bundle.putString("IS_SINGLE","false")
-            bundle.putSerializable(Constants.PARTICIPANT_LIST,grpUsers)
+            bundle.putString("IS_SINGLE", "false")
+            bundle.putSerializable(Constants.PARTICIPANT_LIST, grpUsers)
             val fragment = PreviewImageFragment()
             fragment.arguments = bundle
             requireActivity().supportFragmentManager.beginTransaction()

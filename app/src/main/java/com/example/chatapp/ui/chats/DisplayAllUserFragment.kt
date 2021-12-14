@@ -49,23 +49,26 @@ class DisplayAllUserFragment : Fragment() {
                     Constants.COLUMN_PARTICIPANTS,
                     displayAllUserVM.userList[position].uid
                 )
-                SharedPref.addString(Constants.COLUMN_URI, displayAllUserVM.userList[position].image)
+                SharedPref.addString(
+                    Constants.COLUMN_URI,
+                    displayAllUserVM.userList[position].image
+                )
                 SharedPref.addString(
                     Constants.COLUMN_NAME,
                     displayAllUserVM.userList[position].name
                 )
-                SharedPref.addString(Constants.PARTICIPANT_TOKEN,displayAllUserVM.userList[position].token)
+                SharedPref.addString(
+                    Constants.PARTICIPANT_TOKEN,
+                    displayAllUserVM.userList[position].token
+                )
                 requireActivity().supportFragmentManager.beginTransaction()
                     .add(R.id.flFragment, IndividualChatFragment())
                     .addToBackStack(null)
                     .commit()
             }
-
         })
         displayAllUserVM.getUserListFromDb()
-
         observe()
-
         return view
     }
 
@@ -76,6 +79,4 @@ class DisplayAllUserFragment : Fragment() {
             }
         }
     }
-
-
 }

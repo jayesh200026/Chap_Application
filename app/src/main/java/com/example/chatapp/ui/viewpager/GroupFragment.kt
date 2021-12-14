@@ -47,12 +47,12 @@ class GroupFragment : Fragment() {
                 SharedPref.addString(Constants.GROUP_ID, grpList[position].groupId)
                 SharedPref.addString(Constants.GROUP_NAME, grpList[position].groupName)
                 //sharedViewModel.setGotoGroupChatPage(true)
-                requireActivity().supportFragmentManager.beginTransaction().add(R.id.flFragment,
+                requireActivity().supportFragmentManager.beginTransaction().add(
+                    R.id.flFragment,
                     GroupChatPageFragment()
                 )
                     .addToBackStack(null)
                     .commit()
-
             }
         })
         sharedViewModel = ViewModelProvider(
@@ -83,14 +83,13 @@ class GroupFragment : Fragment() {
             grpList.clear()
             for (i in it) {
                 grpList.add(i)
-                adapter.notifyItemInserted(grpList.size - 1)
+                //adapter.notifyItemInserted(grpList.size - 1)
             }
+            adapter.notifyDataSetChanged()
         }
     }
 
     private fun getgroups() {
         groupVpViewModel.getGroups()
     }
-
-
 }

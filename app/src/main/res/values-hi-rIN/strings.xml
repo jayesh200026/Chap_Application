@@ -12,4 +12,14 @@
     <string name="done">आगे बढ़ो</string>
     <string name="chat">बातचीत</string>
     <string name="group_chat">समूह बातचीत</string>
+    <string name="profile">प्रोफ़ाइल</string>
+    <string name="settings">समायोजन</string>
+    <string name="logout">लॉग आउट</string>
+    <string name="save_changes">परिवर्तनों को सुरक्षित करें</string>
+    <string name="username">उपयोगकर्ता नाम</string>
+    <string name="status">स्थिति</string>
+    <string name="save">सहेजें</string>
+    <string name="new_chat">नई चैट</string>
+    <string name="add_participants">प्रतिभागियों को जोड़ें</string>
+    <string name="type_group_subject_here">यहां ग्रुप सब्जेक्ट टाइप करें..</string>
 </resources>

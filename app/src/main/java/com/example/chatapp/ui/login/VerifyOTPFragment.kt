@@ -28,7 +28,6 @@ class VerifyOTPFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         val view = inflater.inflate(R.layout.fragment_verify_otpfragment, container, false)
         verifyOtp = view.findViewById(R.id.verifyOtpbtn)
         otp = view.findViewById(R.id.etOtp)
@@ -54,10 +53,7 @@ class VerifyOTPFragment : Fragment() {
         }
         observe()
         return view
-
     }
-
-
 
     private fun observe() {
         verifyOtpViewModel.signInWithCrentialStatus.observe(viewLifecycleOwner) {
@@ -66,15 +62,12 @@ class VerifyOTPFragment : Fragment() {
             } else if (it == Constants.EXISTING_USER) {
                 val token = SharedPref.get(Constants.DEVICE_TOKEN)
                 verifyOtpViewModel.updateDeviceToken(token)
-
             }
         }
-        verifyOtpViewModel.updateDeviceTokenStatus.observe(viewLifecycleOwner){
-            if(it){
+        verifyOtpViewModel.updateDeviceTokenStatus.observe(viewLifecycleOwner) {
+            if (it) {
                 sharedViewModel.setGotoHomePageStatus(true)
             }
         }
     }
-
-
 }

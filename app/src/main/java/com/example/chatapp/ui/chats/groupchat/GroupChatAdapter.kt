@@ -23,13 +23,11 @@ class GroupChatAdapter(val list: MutableList<GroupChat>) :
                 LayoutInflater.from(parent.context).inflate(R.layout.right_chat, parent, false)
             return GrouchChatViewHolder(view, viewType)
         }
-
     }
 
     override fun onBindViewHolder(holder: GrouchChatViewHolder, position: Int) {
         val chat = list[position]
         holder.bind(chat)
-
     }
 
     override fun getItemCount(): Int {
@@ -43,12 +41,9 @@ class GroupChatAdapter(val list: MutableList<GroupChat>) :
                 Log.d("chat", "right message")
                 return Constants.MESSAGE_RIGHT
             } else {
-
                 return Constants.MESSAGE_LEFT
-
             }
         }
         return -1
     }
-
 }

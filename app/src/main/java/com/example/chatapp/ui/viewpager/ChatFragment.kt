@@ -80,7 +80,6 @@ class ChatFragment : Fragment() {
                     .addToBackStack(null)
                     .commit()
             }
-
         })
         readChats()
         observe()
@@ -89,13 +88,14 @@ class ChatFragment : Fragment() {
 
     private fun observe() {
         chatFragmentviewModel.chatStatus.observe(viewLifecycleOwner) {
-            //participantList.clear()
-            progressBar.isVisible = false
             chatList.clear()
+            progressBar.isVisible = false
+            //chatList.addAll(it)
             for (i in it) {
                 chatList.add(i)
-                adapter.notifyItemInserted(chatList.size - 1)
+                //adapter.notifyItemInserted(chatList.size - 1)
             }
+            adapter.notifyDataSetChanged()
         }
     }
 

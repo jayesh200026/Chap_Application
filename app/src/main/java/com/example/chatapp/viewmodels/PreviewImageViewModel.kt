@@ -52,9 +52,15 @@ class PreviewImageViewModel: ViewModel() {
         }
     }
 
-    fun sendGrpMessage(groupId: String?, message: String, type: String) {
+    fun sendGrpMessage(groupId: String?, message: String, type: String,grpUsers: MutableList<UserIDToken>) {
         viewModelScope.launch {
             val status = DatabaseService.addnewGrpMessage(groupId,message,type)
+            for(i in grpUsers){
+                if(i.uid != FirebaseAuth.getInstance().currentUser!!.uid && i.token != ""){
+                    NotificationService.pushNotification(i.token,SharedPref.get(Constants.GROUP_NAME)!!,"sent image")
+
+                }
+            }
             _addingMewGrpImageMessageStatus.value = status
         }
     }
@@ -66,16 +72,15 @@ class PreviewImageViewModel: ViewModel() {
     }
 
     fun sendGrpNotification(grpUsers: MutableList<UserIDToken>) {
+        Log.d("grp",grpUsers.toString())
         viewModelScope.launch {
             for(i in grpUsers){
-                Log.d("grp",i.toString())
-                if(i.uid != FirebaseAuth.getInstance().currentUser!!.uid){
+                if(i.uid != FirebaseAuth.getInstance().currentUser!!.uid && i.token != ""){
+                    Log.d("grp",i.toString())
+                    Log.d("grpname",SharedPref.get(Constants.GROUP_NAME)!!)
                     NotificationService.pushNotification(i.token,SharedPref.get(Constants.GROUP_NAME)!!,"sent image")
-
                 }
             }
         }
-
-
     }
 }

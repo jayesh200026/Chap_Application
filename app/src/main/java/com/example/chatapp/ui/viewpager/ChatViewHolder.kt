@@ -2,6 +2,7 @@ package com.example.chatapp.ui.viewpager
 
 import android.content.Context
 import android.sax.TextElementListener
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -28,11 +29,15 @@ class ChatViewHolder(view: View,val context: Context,listener: OnItemClickListen
         name.text = item.name
         lastMessage.text = item.status
         if(item.image != ""){
+            Log.d("profile",item.name+" "+item.image)
             Glide.with(context)
                 .load(item.image)
                 .centerInside()
                 .into(pic)
         }
-
+        else{
+            Log.d("no profile",item.name+" "+item.image)
+            pic.setImageResource(R.drawable.profile_icon)
+        }
     }
 }

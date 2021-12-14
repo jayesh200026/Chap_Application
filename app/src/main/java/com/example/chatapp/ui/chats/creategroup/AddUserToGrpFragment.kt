@@ -29,15 +29,16 @@ class AddUserToGrpFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.add_user_to_grp_fragment, container, false)
         fab = view.findViewById(R.id.seletUserFab)
-        //(requireActivity() as AppCompatActivity).supportActionBar?.hide()
-        adduserToGrpVM = ViewModelProvider(this,
-        AddUserToGrpVMFactory())[AddUserToGrpVM::class.java]
+        adduserToGrpVM = ViewModelProvider(
+            this,
+            AddUserToGrpVMFactory()
+        )[AddUserToGrpVM::class.java]
         recyclerView = view.findViewById(R.id.user_list_recycler_view)
         backBtn = view.findViewById(R.id.user_list_back_button)
         backBtn.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
-        adapter = GroupChatUserAdapter(adduserToGrpVM.userList,requireContext())
+        adapter = GroupChatUserAdapter(adduserToGrpVM.userList, requireContext())
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
@@ -51,9 +52,12 @@ class AddUserToGrpFragment : Fragment() {
 
     private fun gotoSettingGrpNamePage() {
         val selectedList = adapter.getSelectedList()
-        if(selectedList.size != 0){
+        if (selectedList.size != 0) {
             val bundle = Bundle()
-            bundle.putStringArrayList(Constants.COLUMN_PARTICIPANTS,selectedList as ArrayList<String>)
+            bundle.putStringArrayList(
+                Constants.COLUMN_PARTICIPANTS,
+                selectedList as ArrayList<String>
+            )
             val grpNameFragment = GroupNameFragment()
             grpNameFragment.arguments = bundle
             activity?.run {
@@ -66,12 +70,10 @@ class AddUserToGrpFragment : Fragment() {
     }
 
     private fun observe() {
-        adduserToGrpVM.getUserListStatus.observe(viewLifecycleOwner){
-            if(it){
+        adduserToGrpVM.getUserListStatus.observe(viewLifecycleOwner) {
+            if (it) {
                 adapter.notifyDataSetChanged()
             }
         }
     }
-
-
 }

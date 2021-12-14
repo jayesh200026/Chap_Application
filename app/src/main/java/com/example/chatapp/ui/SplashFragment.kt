@@ -12,7 +12,6 @@ import com.example.chatapp.viewmodels.SharedViewModel
 import com.example.chatapp.viewmodels.SharedViewModelFactory
 import kotlin.math.log
 
-
 class SplashFragment : Fragment() {
     lateinit var logo: ImageView
     lateinit var sharedViewModel: SharedViewModel
@@ -21,7 +20,6 @@ class SplashFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         val view = inflater.inflate(R.layout.fragment_splash, container, false)
         sharedViewModel = ViewModelProvider(
             requireActivity(),
@@ -31,16 +29,12 @@ class SplashFragment : Fragment() {
         logo.alpha = 0f
         logo.animate().setDuration(1500).alpha(1f).withEndAction {
             if(sharedViewModel.getCurrentUser() != null){
-                //gotohome page
                 sharedViewModel.setGotoHomePageStatus(true)
             }
             else{
-                //gotorequestotppage
                 sharedViewModel.setGotoRequestOtpStatus(true)
             }
         }
         return  view
     }
-
-
 }
