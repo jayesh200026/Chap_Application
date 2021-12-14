@@ -1,6 +1,7 @@
 package com.example.chatapp.util
 
 object Constants {
+    const val IS_SINGLE = "IS_SINGLE"
     const val PARTICIPANT_LIST = "participant list"
     const val CURRENT_USER_USERNAME = "username"
     const val PARTICIPANT_TOKEN = "participant token"

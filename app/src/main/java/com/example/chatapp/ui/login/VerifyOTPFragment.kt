@@ -42,7 +42,7 @@ class VerifyOTPFragment : Fragment() {
         val verificationId = SharedPref.get(Constants.VERIFICATION)
         verifyOtp.setOnClickListener {
             if (otp.text.toString().trim().isEmpty() || otp.text.toString().trim().length != 6) {
-                Toast.makeText(requireContext(), "enter valid otp", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.invalidOTP), Toast.LENGTH_SHORT).show()
             } else {
                 if (verificationId != null) {
                     val code = otp.text.toString().trim()

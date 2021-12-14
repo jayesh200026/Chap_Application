@@ -1,11 +1,11 @@
 package com.example.chatapp.ui.viewpager
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,7 +38,6 @@ class GroupFragment : Fragment() {
         recyclerView = view.findViewById(R.id.rvChats)
         progressBar = view.findViewById(R.id.chatPB)
         addFab = view.findViewById(R.id.group_fragment_floating_button)
-        //addFab.isVisible = true
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         adapter = GroupAdapter(grpList)
         recyclerView.adapter = adapter
@@ -46,7 +45,6 @@ class GroupFragment : Fragment() {
             override fun onItemClick(position: Int) {
                 SharedPref.addString(Constants.GROUP_ID, grpList[position].groupId)
                 SharedPref.addString(Constants.GROUP_NAME, grpList[position].groupName)
-                //sharedViewModel.setGotoGroupChatPage(true)
                 requireActivity().supportFragmentManager.beginTransaction().add(
                     R.id.flFragment,
                     GroupChatPageFragment()
@@ -83,7 +81,6 @@ class GroupFragment : Fragment() {
             grpList.clear()
             for (i in it) {
                 grpList.add(i)
-                //adapter.notifyItemInserted(grpList.size - 1)
             }
             adapter.notifyDataSetChanged()
         }

@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".ui.chats.singlechat.ParticipantDetailsFragment"
     android:background="#101D25">
+    <ImageView
+        android:id="@+id/profilePhoto"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/profile_icon"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/BackBtn"
@@ -19,45 +29,32 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <com.mikhaellopez.circularimageview.CircularImageView
-        android:id="@+id/profilePhoto"
-        android:layout_width="wrap_content"
-        android:layout_height="240dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="44dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/profile_icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/BackBtn" />
-
     <TextView
         android:id="@+id/name_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
+        android:padding="5dp"
         android:textColor="@color/white"
         android:textSize="18sp"
-        android:padding="5dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profilePhoto" />
+        app:layout_constraintBottom_toBottomOf="@id/profilePhoto"
+        tools:layout_editor_absoluteY="216dp" />
 
     <TextView
         android:id="@+id/status_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
+        android:padding="5dp"
         android:textColor="@color/white"
         android:textSize="18sp"
-        android:padding="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name_tv" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

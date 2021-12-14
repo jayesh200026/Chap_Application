@@ -1,24 +1,22 @@
 package com.example.chatapp.ui.chats.singlechat
 
 import android.os.Bundle
-import android.provider.SyncStateContract
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
 import com.example.chatapp.util.Constants
 import com.example.chatapp.viewmodels.ParticipantDetailVm
 import com.example.chatapp.viewmodels.ParticipantDetailsVMFactory
-import com.mikhaellopez.circularimageview.CircularImageView
 
 class ParticipantDetailsFragment : Fragment() {
     lateinit var backBtn: ImageView
-    lateinit var profile: CircularImageView
+    lateinit var profile: ImageView
     lateinit var name: TextView
     lateinit var status: TextView
     lateinit var participantDetailVm: ParticipantDetailVm

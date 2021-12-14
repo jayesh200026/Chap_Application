@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
-
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/imageView_recycler_item"
         android:layout_width="50dp"
@@ -37,7 +36,6 @@
         app:layout_constraintStart_toEndOf="@+id/imageView_recycler_item"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <View
         android:id="@+id/view3"
         android:layout_width="0dp"
@@ -56,6 +54,4 @@
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

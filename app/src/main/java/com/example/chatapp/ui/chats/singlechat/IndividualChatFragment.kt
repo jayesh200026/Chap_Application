@@ -4,17 +4,21 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
-import com.example.chatapp.service.model.*
+import com.example.chatapp.service.model.Chats
+import com.example.chatapp.service.model.User
 import com.example.chatapp.ui.chats.PreviewImageFragment
 import com.example.chatapp.util.Constants
 import com.example.chatapp.util.GroupParticipants
@@ -95,7 +99,6 @@ class IndividualChatFragment : Fragment(), View.OnClickListener {
             }
         }
         backBtn.setOnClickListener {
-//            sharedViewModel.setGotoHomePageStatus(true)
             requireActivity().supportFragmentManager.popBackStack()
         }
         val name = SharedPref.get(Constants.COLUMN_NAME)
@@ -217,7 +220,7 @@ class IndividualChatFragment : Fragment(), View.OnClickListener {
             bundle.putSerializable(Constants.PARTICIPANT_LIST, grpUsers)
             bundle.putSerializable(Constants.SENDING_IMAGE_URI, imageUri)
             bundle.putString(Constants.COLUMN_PARTICIPANTS, participant)
-            bundle.putString("IS_SINGLE", "true")
+            bundle.putString(Constants.IS_SINGLE, "true")
             val fragment = PreviewImageFragment()
             fragment.arguments = bundle
             requireActivity().supportFragmentManager.beginTransaction()
@@ -232,7 +235,6 @@ class IndividualChatFragment : Fragment(), View.OnClickListener {
             R.id.chatProfilePic, R.id.participantName -> {
                 val participant = SharedPref.get(Constants.COLUMN_PARTICIPANTS)
                 val bundle = Bundle()
-
                 bundle.putString(Constants.COLUMN_PARTICIPANTS, participant)
                 val participantPreviewFragment = ParticipantDetailsFragment()
                 participantPreviewFragment.arguments = bundle

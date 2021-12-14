@@ -11,7 +11,7 @@ import com.example.chatapp.service.model.UserWithID
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class AddUserToGrpVM: ViewModel() {
+class AddUserToGrpVM : ViewModel() {
     val userList = ArrayList<UserIDToken>()
 
     private val _getUserListStatus = MutableLiveData<Boolean>()

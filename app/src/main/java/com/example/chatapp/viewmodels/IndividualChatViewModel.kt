@@ -1,8 +1,6 @@
 package com.example.chatapp.viewmodels
 
 import android.net.Uri
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,36 +11,27 @@ import com.example.chatapp.service.model.AllMessages
 import com.example.chatapp.service.model.Chats
 import com.example.chatapp.service.model.NotificationService
 import com.example.chatapp.service.model.User
-import com.example.chatapp.util.Constants
-import com.example.chatapp.util.SharedPref
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class IndividualChatViewModel : ViewModel() {
-    val _readAllChatsStatsus = MutableLiveData<MutableList<AllMessages>>()
+    private val _readAllChatsStatsus = MutableLiveData<MutableList<AllMessages>>()
     val readAllChatsStatsus = _readAllChatsStatsus as LiveData<MutableList<AllMessages>>
 
-    val _chatsStatus = MutableLiveData<Chats?>()
+    private val _chatsStatus = MutableLiveData<Chats?>()
     val chatStatus = _chatsStatus as LiveData<Chats?>
 
-    val _nextchatsStatus = MutableLiveData<MutableList<Chats>>()
+    private val _nextchatsStatus = MutableLiveData<MutableList<Chats>>()
     val nextchatsStatus = _nextchatsStatus as LiveData<MutableList<Chats>>
 
-    val _uploadMessageImageStatus = MutableLiveData<Uri?>()
+    private val _uploadMessageImageStatus = MutableLiveData<Uri?>()
     val uploadMessageImageStatus = _uploadMessageImageStatus as LiveData<Uri?>
 
-    val _sendMessageStatus = MutableLiveData<Boolean>()
+    private val _sendMessageStatus = MutableLiveData<Boolean>()
     val sendMessageStatus = _sendMessageStatus as LiveData<Boolean>
 
-    val _currentUserStatus = MutableLiveData<User>()
+    private val _currentUserStatus = MutableLiveData<User>()
     val currentUserStatus = _currentUserStatus as LiveData<User>
-
-    fun getAllChats(participant: String?) {
-        viewModelScope.launch {
-            val list = DatabaseService.getAllChats(participant)
-            _readAllChatsStatsus.value = list
-        }
-    }
 
     fun sendMessage(receiver: String?, message: String, type: String) {
         viewModelScope.launch {
@@ -56,13 +45,6 @@ class IndividualChatViewModel : ViewModel() {
             FirestoreDatabase.subscribeToListener(participant).collect {
                 _chatsStatus.value = it
             }
-        }
-    }
-
-    fun uploadMessageImage(selectedImagePath: Uri?) {
-        viewModelScope.launch {
-            val uri = DatabaseService.uploadMessageImage(selectedImagePath)
-            _uploadMessageImageStatus.value = uri
         }
     }
 
@@ -82,9 +64,9 @@ class IndividualChatViewModel : ViewModel() {
 
     fun sendPushNotification(token: String?, userName: String, textMessage: String) {
         viewModelScope.launch {
-            if(textMessage == ""){
+            if (textMessage == "") {
                 NotificationService.pushNotification(token, userName, "Sent image")
-            }else {
+            } else {
                 NotificationService.pushNotification(token, userName, textMessage)
             }
         }

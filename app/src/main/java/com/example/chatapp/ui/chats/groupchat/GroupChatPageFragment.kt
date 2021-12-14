@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +11,13 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
 import com.example.chatapp.service.model.GroupChat
 import com.example.chatapp.service.model.UserIDToken
-import com.example.chatapp.service.model.UserWithToken
 import com.example.chatapp.ui.chats.PreviewImageFragment
 import com.example.chatapp.util.Constants
 import com.example.chatapp.util.GroupParticipants
@@ -136,7 +135,6 @@ class GroupChatPageFragment : Fragment() {
 
     private fun observe() {
         groupChatViewModel.groupChatMessageStatus.observe(viewLifecycleOwner) {
-            //isLoading = false
             if (it != null) {
                 list.add(0, it)
                 adapter.notifyItemInserted(0)
@@ -171,7 +169,6 @@ class GroupChatPageFragment : Fragment() {
                 groupChatViewModel.sendPushNotification(grpName, participantList, textMessage)
             }
         }
-
     }
 
     private fun getAllChatsOfGroup(groupId: String?) {
@@ -190,7 +187,7 @@ class GroupChatPageFragment : Fragment() {
             val bundle = Bundle()
             bundle.putSerializable(Constants.SENDING_IMAGE_URI, imageUri)
             bundle.putString(Constants.COLUMN_PARTICIPANTS, participant)
-            bundle.putString("IS_SINGLE", "false")
+            bundle.putString(Constants.IS_SINGLE, "false")
             bundle.putSerializable(Constants.PARTICIPANT_LIST, grpUsers)
             val fragment = PreviewImageFragment()
             fragment.arguments = bundle

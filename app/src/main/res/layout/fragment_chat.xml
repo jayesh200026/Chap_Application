@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.viewpager.ChatFragment"
     android:background="#101D25">
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvChats"
         android:layout_width="match_parent"
@@ -38,7 +37,4 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/rvChats"
         app:layout_constraintEnd_toEndOf="@id/rvChats" />
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

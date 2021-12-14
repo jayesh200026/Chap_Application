@@ -5,7 +5,6 @@ import com.example.chatapp.util.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.PhoneAuthCredential
-import java.lang.Exception
 import kotlin.coroutines.suspendCoroutine
 
 object FirebaseAuthentication {
