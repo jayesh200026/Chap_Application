@@ -10,21 +10,20 @@ import com.example.chatapp.service.FirebaseAuthentication
 import com.google.firebase.auth.PhoneAuthCredential
 import kotlinx.coroutines.launch
 
-class VerifyOtpViewModel: ViewModel() {
-
-    val _signInWithCredentialStatus = MutableLiveData<String>()
+class VerifyOtpViewModel : ViewModel() {
+    private val _signInWithCredentialStatus = MutableLiveData<String>()
     val signInWithCrentialStatus = _signInWithCredentialStatus as LiveData<String>
 
-    val _updateDeviceTokenStatus = MutableLiveData<Boolean>()
+    private val _updateDeviceTokenStatus = MutableLiveData<Boolean>()
     val updateDeviceTokenStatus = _updateDeviceTokenStatus as LiveData<Boolean>
 
     fun signInWithCredentails(credential: PhoneAuthCredential) {
         viewModelScope.launch {
             try {
-               val signInStatus = FirebaseAuthentication.signInWithCredential(credential)
-                Log.d("login",signInStatus)
+                val signInStatus = FirebaseAuthentication.signInWithCredential(credential)
+                Log.d("login", signInStatus)
                 _signInWithCredentialStatus.value = signInStatus
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
@@ -35,7 +34,5 @@ class VerifyOtpViewModel: ViewModel() {
             val status = DatabaseService.updateDeviceToken(token)
             _updateDeviceTokenStatus.value = status
         }
-
     }
-
 }

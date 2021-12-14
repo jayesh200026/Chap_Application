@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.chats.creategroup.GroupNameFragment"
     android:background="#232D36">
-
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/grpPic"
         android:layout_width="107dp"

@@ -6,11 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatapp.service.FirestoreDatabase
 import com.example.chatapp.service.model.UserIDToken
-import com.example.chatapp.service.model.UserWithID
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class DisplayAllUSerVM: ViewModel() {
+class DisplayAllUSerVM : ViewModel() {
     val userList = ArrayList<UserIDToken>()
 
     private val _getUserListStatus = MutableLiveData<Boolean>()

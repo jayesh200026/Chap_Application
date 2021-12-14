@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.chatapp.R
 import com.example.chatapp.viewmodels.SharedViewModel
 import com.example.chatapp.viewmodels.SharedViewModelFactory
-import kotlin.math.log
 
 class SplashFragment : Fragment() {
     lateinit var logo: ImageView

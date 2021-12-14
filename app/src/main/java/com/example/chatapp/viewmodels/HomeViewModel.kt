@@ -10,10 +10,10 @@ import com.example.chatapp.service.model.Chat
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
-    val _logoutStatus = MutableLiveData<Boolean>()
+    private val _logoutStatus = MutableLiveData<Boolean>()
     val logoutStatus = _logoutStatus as LiveData<Boolean>
 
-    val _chatStatus = MutableLiveData<MutableList<Chat>>()
+    private val _chatStatus = MutableLiveData<MutableList<Chat>>()
     val chatStatus = _chatStatus as LiveData<MutableList<Chat>>
     fun logout() {
         viewModelScope.launch {
@@ -21,6 +21,4 @@ class HomeViewModel : ViewModel() {
             _logoutStatus.value = status
         }
     }
-
-
 }

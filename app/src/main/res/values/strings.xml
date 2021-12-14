@@ -23,4 +23,6 @@
     <string name="new_chat">New Chat</string>
     <string name="add_participants">Add participants</string>
     <string name="type_group_subject_here">Type group subject here..</string>
+    <string name="failed">Failed</string>
+    <string name="invalidOTP">enter valid otp</string>
 </resources>

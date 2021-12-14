@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
-
-
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/chatuserpic"
         android:layout_width="50dp"

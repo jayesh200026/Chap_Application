@@ -2,9 +2,10 @@ package com.example.chatapp.service
 
 import android.net.Uri
 import android.util.Log
-import com.example.chatapp.service.model.*
+import com.example.chatapp.service.model.AllMessages
+import com.example.chatapp.service.model.User
+import com.example.chatapp.service.model.UserIDToken
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 
@@ -32,18 +33,6 @@ object DatabaseService {
         }
     }
 
-    suspend fun fetchProfile(): Uri? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val uri = FireBaseStorage.fetchProfile()
-                uri
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
-        }
-    }
-
     suspend fun getUserDetails(): User? {
         return withContext(Dispatchers.IO) {
             try {
@@ -55,49 +44,6 @@ object DatabaseService {
         }
     }
 
-    suspend fun readChats(): MutableList<UserIDToken> {
-        return withContext(Dispatchers.IO) {
-            val friends = mutableListOf<UserIDToken>()
-            var list = mutableListOf<String>()
-            val allUsers = FirestoreDatabase.readAllUsers()
-             FirestoreDatabase.readChats().collect {
-                 list = it
-                 Log.d("participant",list.toString())
-            }
-//            FirestoreDatabase.readChats().collect {
-//                list = it
-//                val allUsers = FirestoreDatabase.readAllUsers()
-//                for (i in allUsers) {
-//                    if (i.uid in list) {
-//                        val chatUser = UserIDToken(i.uid, i.name, i.status, i.image, i.token)
-//                        friends.add(chatUser)
-//                    }
-//                    //friends
-//                }
-//            }
-
-            Log.d("allusers",""+allUsers.size)
-
-            for (i in allUsers) {
-                if (i.uid in list) {
-                    val chatUser = UserIDToken(i.uid, i.name, i.status, i.image, i.token)
-                    friends.add(chatUser)
-                }
-            }
-            friends
-        }
-    }
-
-    suspend fun getAllChats(participant: String?): MutableList<AllMessages> {
-        return withContext(Dispatchers.IO) {
-            try {
-                FirestoreDatabase.getAllChats(participant)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                mutableListOf<AllMessages>()
-            }
-        }
-    }
 
     suspend fun addNewMessage(receiver: String?, message: String, type: String): Boolean {
         return withContext(Dispatchers.IO) {
@@ -109,17 +55,6 @@ object DatabaseService {
             }
         }
     }
-
-//    suspend fun getGroups(): MutableList<GroupDetails> {
-//        return withContext(Dispatchers.IO) {
-//            try {
-//                FirestoreDatabase.getGroups()
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//                mutableListOf<GroupDetails>()
-//            }
-//        }
-//    }
 
     suspend fun addnewGrpMessage(groupId: String?, message: String, type: String): Boolean {
         return withContext(Dispatchers.IO) {

@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.profile.AddUserDetailFragment"
     android:background="@drawable/whatsapp_dark">
-
-
     <TextView
         android:id="@+id/textView7"
         android:layout_width="0dp"

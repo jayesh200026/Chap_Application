@@ -2,13 +2,13 @@ package com.example.chatapp.ui.chats
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
@@ -16,7 +16,6 @@ import com.example.chatapp.service.model.UserIDToken
 import com.example.chatapp.util.Constants
 import com.example.chatapp.util.GroupParticipants
 import com.example.chatapp.util.ImageUri
-import com.example.chatapp.util.SharedPref
 import com.example.chatapp.viewmodels.PreviewImageViewModel
 import com.example.chatapp.viewmodels.PreviewimageVMFactory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -26,7 +25,6 @@ class PreviewImageFragment : Fragment() {
     lateinit var send: FloatingActionButton
     lateinit var previewImageViewModel: PreviewImageViewModel
     lateinit var progresBar: ProgressBar
-    //var grpUsers:GroupParticipants? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,10 +35,9 @@ class PreviewImageFragment : Fragment() {
         send = view.findViewById(R.id.chatsendBtn)
         progresBar = view.findViewById(R.id.previemPB)
         val imageUri = arguments?.getSerializable(Constants.SENDING_IMAGE_URI) as ImageUri
-         val grpUsers = arguments?.getSerializable(Constants.PARTICIPANT_LIST) as GroupParticipants
-
+        val grpUsers = arguments?.getSerializable(Constants.PARTICIPANT_LIST) as GroupParticipants
         val list = mutableListOf<UserIDToken>()
-        if( grpUsers.list != null) {
+        if (grpUsers.list != null) {
             for (i in grpUsers.list) {
                 Log.d("user", i.toString())
                 list.add(i)
@@ -48,7 +45,7 @@ class PreviewImageFragment : Fragment() {
         }
         Log.d("list", list.toString())
         val participant = arguments?.getString(Constants.COLUMN_PARTICIPANTS)
-        val isSingle = arguments?.getString("IS_SINGLE")
+        val isSingle = arguments?.getString(Constants.IS_SINGLE)
         previewImageViewModel = ViewModelProvider(
             this,
             PreviewimageVMFactory()
@@ -94,7 +91,6 @@ class PreviewImageFragment : Fragment() {
         }
         previewImageViewModel.addingMewGrpImageMessageStatus.observe(viewLifecycleOwner) {
             if (it) {
-                //previewImageViewModel.sendGrpNotification(list)
                 progresBar.isVisible = false
                 requireActivity().supportFragmentManager.popBackStack()
             }

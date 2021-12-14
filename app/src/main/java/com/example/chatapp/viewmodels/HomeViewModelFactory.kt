@@ -3,8 +3,8 @@ package com.example.chatapp.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class HomeViewModelFactory: ViewModelProvider.Factory {
+class HomeViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return  HomeViewModel() as T
+        return HomeViewModel() as T
     }
 }

@@ -10,28 +10,28 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
 class SharedViewModel : ViewModel() {
-    val _gotoSetProfilePageStatus = MutableLiveData<Boolean>()
+    private val _gotoSetProfilePageStatus = MutableLiveData<Boolean>()
     val gotoSetProfilePageStatus = _gotoSetProfilePageStatus as LiveData<Boolean>
 
-    val _gotoSetVerifiOtpPageStatus = MutableLiveData<Boolean>()
+    private val _gotoSetVerifiOtpPageStatus = MutableLiveData<Boolean>()
     val gotoSetVerifiOtpPageStatus = _gotoSetVerifiOtpPageStatus as LiveData<Boolean>
 
-    val _gotoHomePageStatus = MutableLiveData<Boolean>()
+    private val _gotoHomePageStatus = MutableLiveData<Boolean>()
     val gotoHomePageStatus = _gotoHomePageStatus as LiveData<Boolean>
 
-    val _gotoRequestOtpPageStatus = MutableLiveData<Boolean>()
+    private val _gotoRequestOtpPageStatus = MutableLiveData<Boolean>()
     val gotoRequestOtpPageStatus = _gotoRequestOtpPageStatus as LiveData<Boolean>
 
-    val _gotoEditProfilePageStatus = MutableLiveData<Boolean>()
+    private val _gotoEditProfilePageStatus = MutableLiveData<Boolean>()
     val gotoEditProfilePageStatus = _gotoEditProfilePageStatus as LiveData<Boolean>
 
-    val _gotoIndividualChatPageStatus = MutableLiveData<Boolean>()
+    private val _gotoIndividualChatPageStatus = MutableLiveData<Boolean>()
     val gotoIndividualChatPageStatus = _gotoIndividualChatPageStatus as LiveData<Boolean>
 
-    val _gotoGroupChatPageStatus = MutableLiveData<Boolean>()
+    private val _gotoGroupChatPageStatus = MutableLiveData<Boolean>()
     val gotoGroupChatPageStatus = _gotoGroupChatPageStatus as LiveData<Boolean>
 
-    val _deviceTokenStatus = MutableLiveData<Boolean>()
+    private val _deviceTokenStatus = MutableLiveData<Boolean>()
     val deviceTokenStatus = _deviceTokenStatus as LiveData<Boolean>
 
     fun setGotoSetProfilePage(status: Boolean) {
@@ -54,15 +54,7 @@ class SharedViewModel : ViewModel() {
         _gotoEditProfilePageStatus.value = b
     }
 
-    fun setGotoIndividualChatStatus(b: Boolean) {
-        _gotoIndividualChatPageStatus.value = b
-    }
-
-    fun setGotoGroupChatPage(b: Boolean) {
-        _gotoGroupChatPageStatus.value = b
-    }
-
-    fun getCurrentUser(): FirebaseUser?{
+    fun getCurrentUser(): FirebaseUser? {
         return FirebaseAuthentication.getCurrentuser()
     }
 
@@ -71,7 +63,5 @@ class SharedViewModel : ViewModel() {
             val status = DatabaseService.updateDeviceToken(token)
             _deviceTokenStatus.value = status
         }
-
     }
-
 }

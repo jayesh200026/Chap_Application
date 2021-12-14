@@ -1,16 +1,13 @@
 package com.example.chatapp.ui.viewpager
 
 import android.content.Context
-import android.sax.TextElementListener
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
-import com.example.chatapp.service.model.Chat
 import com.example.chatapp.service.model.UserIDToken
-import com.example.chatapp.service.model.UserWithID
 import com.example.chatapp.ui.OnItemClickListener
 import com.mikhaellopez.circularimageview.CircularImageView
 

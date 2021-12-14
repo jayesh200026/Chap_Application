@@ -8,7 +8,6 @@ import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
-import com.google.firebase.firestore.model.Document
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -81,7 +80,8 @@ object FirestoreDatabase {
             }
         }
     }
-     fun readChats(): Flow<MutableList<String>> {
+
+    fun readChats(): Flow<MutableList<String>> {
         return callbackFlow {
             val uid = FirebaseAuth.getInstance().currentUser?.uid
             val list = mutableListOf<Chat>()
@@ -90,12 +90,12 @@ object FirestoreDatabase {
                 val ref = FirebaseFirestore.getInstance().collection("chats")
                     .whereArrayContains(Constants.COLUMN_PARTICIPANTS, uid)
                     .addSnapshotListener { snapshot, error ->
-                        if(error != null){
+                        if (error != null) {
                             cancel("error fetching collection data at path", error)
                         }
-                        if(snapshot != null){
-                            for(document in snapshot.documentChanges){
-                                if(document.type == DocumentChange.Type.ADDED){
+                        if (snapshot != null) {
+                            for (document in snapshot.documentChanges) {
+                                if (document.type == DocumentChange.Type.ADDED) {
                                     val list1 =
                                         document.document.get(Constants.COLUMN_PARTICIPANTS) as MutableList<String>
                                     Log.d("participants", list1.toString())
@@ -112,32 +112,6 @@ object FirestoreDatabase {
             }
         }
     }
-
-//    suspend fun readChats(): MutableList<String> {
-//        return suspendCoroutine { cont ->
-//            val uid = FirebaseAuth.getInstance().currentUser?.uid
-//            val list = mutableListOf<Chat>()
-//            val participantList = mutableListOf<String>()
-//            if (uid != null) {
-//                FirebaseFirestore.getInstance().collection("chats")
-//                    .whereArrayContains(Constants.COLUMN_PARTICIPANTS, uid)
-//                    .get()
-//                    .addOnSuccessListener {
-//                        for (documents in it) {
-//                            val list1 =
-//                                documents.get(Constants.COLUMN_PARTICIPANTS) as MutableList<String>
-//                            Log.d("participants", list1.toString())
-//                            list1.remove(uid)
-//                            participantList.add(list1[0])
-//                        }
-//                        cont.resumeWith(Result.success(participantList))
-//                    }
-//                    .addOnFailureListener {
-//                        Log.d("chat", "failed")
-//                    }
-//            }
-//        }
-//    }
 
     suspend fun readAllUsers(): MutableList<UserIDToken> {
         return suspendCoroutine { cont ->
@@ -346,24 +320,25 @@ object FirestoreDatabase {
             }
         }
     }
-     fun getGroups(): Flow<MutableList<GroupDetails>> {
+
+    fun getGroups(): Flow<MutableList<GroupDetails>> {
         return callbackFlow {
             val userId = FirebaseAuth.getInstance().currentUser?.uid
             val grpList = mutableListOf<GroupDetails>()
             if (userId != null) {
-               val ref = FirebaseFirestore.getInstance().collection(Constants.GROUP_CHAT)
+                val ref = FirebaseFirestore.getInstance().collection(Constants.GROUP_CHAT)
                     .whereArrayContains(Constants.COLUMN_PARTICIPANTS, userId)
                     .addSnapshotListener { snapshot, error ->
-                        if(error != null){
+                        if (error != null) {
                             cancel("error fetching collection data at path", error)
-                    }
-                        if(snapshot != null){
-                            for(document in snapshot.documentChanges){
-                                if (document.type == DocumentChange.Type.ADDED){
+                        }
+                        if (snapshot != null) {
+                            for (document in snapshot.documentChanges) {
+                                if (document.type == DocumentChange.Type.ADDED) {
                                     val id = document.document.id
-                            val groupName = document.document.get(Constants.NAME).toString()
-                            val grp = GroupDetails(id, groupName)
-                            grpList.add(grp)
+                                    val groupName = document.document.get(Constants.NAME).toString()
+                                    val grp = GroupDetails(id, groupName)
+                                    grpList.add(grp)
                                 }
 
                             }
@@ -376,31 +351,6 @@ object FirestoreDatabase {
             }
         }
     }
-
-
-//    suspend fun getGroups(): MutableList<GroupDetails> {
-//        return suspendCoroutine { cont ->
-//            val grpList = mutableListOf<GroupDetails>()
-//            val userId = FirebaseAuth.getInstance().currentUser?.uid
-//            if (userId != null) {
-//                FirebaseFirestore.getInstance().collection(Constants.GROUP_CHAT)
-//                    .whereArrayContains(Constants.COLUMN_PARTICIPANTS, userId)
-//                    .get()
-//                    .addOnSuccessListener {
-//                        for (document in it) {
-//                            val id = document.id
-//                            val groupName = document.get(Constants.NAME).toString()
-//                            val grp = GroupDetails(id, groupName)
-//                            grpList.add(grp)
-//                        }
-//                        cont.resumeWith(Result.success(grpList))
-//                    }
-//                    .addOnFailureListener {
-//                        cont.resumeWith(Result.failure(it))
-//                    }
-//            }
-//        }
-//    }
 
     fun subscribeToGroup(groupId: String?): Flow<GroupChat?> {
         return callbackFlow<GroupChat?> {

@@ -1,11 +1,11 @@
 package com.example.chatapp.ui.chats.creategroup
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.chatapp.R
 import com.example.chatapp.ui.home.HomeFragment
@@ -35,7 +35,6 @@ class GroupNameFragment : Fragment() {
         saveGrpfab.setOnClickListener {
             if (grpName.text.isNotEmpty() && selectedList != null) {
                 grpNameVM.createGrp(grpName.text.toString(), selectedList)
-
             }
         }
         observe()

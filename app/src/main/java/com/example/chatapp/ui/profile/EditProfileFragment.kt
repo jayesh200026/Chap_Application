@@ -2,8 +2,6 @@ package com.example.chatapp.ui.profile
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +12,8 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
@@ -28,10 +25,6 @@ import com.example.chatapp.viewmodels.EditProfileViewModelFactory
 import com.example.chatapp.viewmodels.SharedViewModel
 import com.example.chatapp.viewmodels.SharedViewModelFactory
 import com.mikhaellopez.circularimageview.CircularImageView
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_edit_profile.*
-import java.net.URI
-import java.net.URL
 
 
 class EditProfileFragment : Fragment() {
@@ -44,6 +37,7 @@ class EditProfileFragment : Fragment() {
     lateinit var profilePhoto: CircularImageView
     lateinit var getImage: ActivityResultLauncher<String>
     var uri: Uri? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,7 +57,6 @@ class EditProfileFragment : Fragment() {
         status = view.findViewById(R.id.editstatus_et)
         saveBtn = view.findViewById(R.id.savechangesBtn)
         profilePhoto = view.findViewById(R.id.editPhoto)
-        // editProfileViewModel.fetchProfilepic()
         editProfileViewModel.fetchUserDetails()
         backBtn.setOnClickListener {
             sharedViewModel.setGotoHomePageStatus(true)

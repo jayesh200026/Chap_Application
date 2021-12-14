@@ -1,19 +1,18 @@
 package com.example.chatapp.ui.viewpager
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.R
 import com.example.chatapp.service.model.UserIDToken
-import com.example.chatapp.service.model.UserWithID
 import com.example.chatapp.ui.OnItemClickListener
 import com.example.chatapp.ui.chats.DisplayAllUserFragment
 import com.example.chatapp.ui.chats.singlechat.IndividualChatFragment
@@ -33,9 +32,6 @@ class ChatFragment : Fragment() {
     lateinit var progressBar: ProgressBar
     private lateinit var adapter: ChatAdapter
     lateinit var addFab: FloatingActionButton
-    var participantList = mutableListOf<String>()
-    var userList = mutableListOf<UserWithID>()
-    var userIdList = mutableListOf<String>()
     var chatList = mutableListOf<UserIDToken>()
 
     override fun onCreateView(
@@ -72,7 +68,6 @@ class ChatFragment : Fragment() {
                 SharedPref.addString(Constants.COLUMN_URI, chatList[position].image)
                 SharedPref.addString(Constants.COLUMN_NAME, chatList[position].name)
                 SharedPref.addString(Constants.PARTICIPANT_TOKEN,chatList[position].token)
-                //sharedViewModel.setGotoIndividualChatStatus(true)
                 requireActivity().supportFragmentManager.beginTransaction().add(
                     R.id.flFragment,
                     IndividualChatFragment()
@@ -90,10 +85,8 @@ class ChatFragment : Fragment() {
         chatFragmentviewModel.chatStatus.observe(viewLifecycleOwner) {
             chatList.clear()
             progressBar.isVisible = false
-            //chatList.addAll(it)
             for (i in it) {
                 chatList.add(i)
-                //adapter.notifyItemInserted(chatList.size - 1)
             }
             adapter.notifyDataSetChanged()
         }

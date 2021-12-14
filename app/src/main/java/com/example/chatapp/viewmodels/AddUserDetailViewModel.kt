@@ -11,16 +11,16 @@ import com.example.chatapp.service.model.User
 import kotlinx.coroutines.launch
 
 class AddUserDetailViewModel : ViewModel() {
-    val _addUserDetailsStatus = MutableLiveData<Boolean>()
+    private val _addUserDetailsStatus = MutableLiveData<Boolean>()
     val addUserDetailsStatus = _addUserDetailsStatus as LiveData<Boolean>
 
-    val _addProfilePicStatus = MutableLiveData<Uri?>()
+    private val _addProfilePicStatus = MutableLiveData<Uri?>()
     val addProfilePicStatus = _addProfilePicStatus as LiveData<Uri?>
 
-    fun addUserDetails(user: User,token: String?) {
+    fun addUserDetails(user: User, token: String?) {
         viewModelScope.launch {
-            val firestoreStatus = DatabaseService.addUser(user,token)
-            Log.d("addUser",""+firestoreStatus)
+            val firestoreStatus = DatabaseService.addUser(user, token)
+            Log.d("addUser", "" + firestoreStatus)
             _addUserDetailsStatus.value = firestoreStatus
         }
     }

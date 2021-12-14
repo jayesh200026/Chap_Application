@@ -3,7 +3,6 @@ package com.example.chatapp.ui.profile
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +13,8 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.chatapp.R
@@ -95,7 +94,7 @@ class AddUserDetailFragment : Fragment() {
                 progressBar.isVisible = false
                 sharedViewModel.setGotoHomePageStatus(true)
             } else {
-                Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.failed), Toast.LENGTH_SHORT).show()
             }
         }
         addUserDetailViewModel.addProfilePicStatus.observe(viewLifecycleOwner) { uri ->

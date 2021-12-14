@@ -146,13 +146,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.usermenu, menu)
         return true
-//        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item?.itemId) {
             R.id.settings -> {
-
             }
             R.id.profile -> {
                 sharedViewModel.setGotoEditProfilePage(true)

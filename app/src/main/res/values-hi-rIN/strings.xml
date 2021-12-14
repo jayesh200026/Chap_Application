@@ -22,4 +22,6 @@
     <string name="new_chat">नई चैट</string>
     <string name="add_participants">प्रतिभागियों को जोड़ें</string>
     <string name="type_group_subject_here">यहां ग्रुप सब्जेक्ट टाइप करें..</string>
+    <string name="failed">अनुत्तीर्ण होना</string>
+    <string name="invalidOTP">वैध ओटीपी दर्ज करें</string>
 </resources>

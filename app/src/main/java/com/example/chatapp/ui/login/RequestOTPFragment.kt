@@ -1,7 +1,6 @@
 package com.example.chatapp.ui.login
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.chatapp.R
 import com.example.chatapp.util.Constants
@@ -61,7 +61,6 @@ class RequestOTPFragment : Fragment() {
         progressBar.isVisible = true
         requestOtp.isVisible = false
         mCallback = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                 //TODO
             }
@@ -85,7 +84,7 @@ class RequestOTPFragment : Fragment() {
         val options = PhoneAuthOptions.newBuilder(mAuth)
             .setPhoneNumber(
                 "+91" + phoneNumber.text.toString().trim()
-            )       // Phone number to verify
+            )
             .setTimeout(60L, TimeUnit.SECONDS)
             .setActivity(requireActivity())
             .setCallbacks(mCallback)

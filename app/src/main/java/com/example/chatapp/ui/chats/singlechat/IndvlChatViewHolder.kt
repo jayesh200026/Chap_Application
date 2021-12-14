@@ -10,7 +10,6 @@ import com.bumptech.glide.Glide
 import com.example.chatapp.R
 import com.example.chatapp.service.model.Chats
 import com.example.chatapp.util.Constants
-import java.text.DateFormat
 
 class IndvlChatViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private val senderMessage = view.findViewById<TextView>(R.id.senderMsg)
@@ -30,7 +29,6 @@ class IndvlChatViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
                 .into(leftImage)
         }
         Log.d("chat", "inside view holder")
-
     }
 }
 

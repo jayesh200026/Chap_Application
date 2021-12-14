@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.profile.EditProfileFragment"
     android:background="@drawable/whatsapp_dark">
-
-
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/editPhoto"
         android:layout_width="wrap_content"
